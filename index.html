@@ -447,7 +447,7 @@
 <script>
 (function(){
   const SC=[
-    { label:"Plant Species ID", img:"assets/images/ChatBot_1.png", emoji:"🌿", alt:"Globe artichoke plant",
+    { label:"Plant Species ID", img:"assets/ChatBot_1.png", emoji:"🌿", alt:"Globe artichoke plant",
       msgs:[
         {r:"u",t:"Based on the plant's visible features and its surrounding environment, identify the most likely plant species."},
         {r:"b",t:"The plant is <strong>Cynara scolymus</strong>, commonly known as the globe artichoke, a cultivated variety of <em>Cynara cardunculus</em>."},
@@ -455,13 +455,13 @@
         {r:"b",t:"Its native range is the <strong>Mediterranean region</strong>."},
       ]
     },
-    { label:"Disease Detection", img:"assets/images/ChatBot_2.png", emoji:"🍌", alt:"Banana leaf with disease",
+    { label:"Disease Detection", img:"assets/ChatBot_2.png", emoji:"🍌", alt:"Banana leaf with disease",
       msgs:[
         {r:"u",t:"Given this image of a banana leaf, determine whether the plant appears healthy or unhealthy."},
         {r:"b",t:"The plant appears <strong>unhealthy</strong> — numerous brown spots with yellow halos indicate infection by <strong>Sigatoka disease</strong> caused by <strong><em>Mycosphaerella fijiensis</em></strong> (anamorph <em>Paracercospora fijiensis</em>)."},
       ]
     },
-    { label:"Fruit Ripeness", img:"assets/images/ChatBot_3.png", emoji:"🥭", alt:"Mango tree with fruits",
+    { label:"Fruit Ripeness", img:"assets/ChatBot_3.png", emoji:"🥭", alt:"Mango tree with fruits",
       msgs:[
         {r:"u",t:"Analyze the visible mangos and estimate the total number in the image and the ripeness level of each mango."},
         {r:"b",t:"The image shows a <strong>tree with nine mangos</strong>, likely <strong>ripe or nearly ripe</strong> — colors range from <strong>green to orange-yellow</strong>, indicating varying maturity stages."},
@@ -820,61 +820,76 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 
 // ── OpenAlex — live citations & h-index ──────────────────────
 async function loadOpenAlex() {
+  // Hardcoded fallback values (always shown first, replaced if API succeeds)
+  const FALLBACK = { citations: 55, hindex: 4, papers: 13 };
+
+  function setStats(c, h, p) {
+    document.getElementById('stat-citations').textContent = c;
+    document.getElementById('stat-hindex').textContent    = h;
+    document.getElementById('stat-papers').textContent    = p;
+    ['stat-citations','stat-hindex','stat-papers'].forEach(id =>
+      document.getElementById(id).classList.remove('loading'));
+  }
+
+  function clearSpinners() {
+    document.querySelectorAll('.pub-citations .spinner').forEach(s =>
+      s.parentElement.textContent = '');
+  }
+
+  // Show fallback immediately so stats never stay blank
+  setStats(FALLBACK.citations + '+', FALLBACK.hindex, FALLBACK.papers);
+  clearSpinners();
+
   try {
-    const res  = await fetch('https://api.openalex.org/authors?search=Abderrahmene+Boudiaf&filter=affiliations.institution.country_code:AE&mailto=contact@boudiaf.ai');
+    // Search by name + institution country, pick result with KU affiliation
+    const res  = await fetch(
+      'https://api.openalex.org/authors?search=Abderrahmene+Boudiaf' +
+      '&filter=last_known_institutions.country_code:AE' +
+      '&mailto=boudiafa.github.io');
+    if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
-    const author = data.results?.[0];
+
+    // Find the right author — must have Khalifa in affiliation
+    let author = data.results?.find(a =>
+      a.last_known_institutions?.some(i =>
+        i.display_name?.toLowerCase().includes('khalifa')));
+
+    // If not found by institution filter, take first result
+    if (!author && data.results?.length > 0) author = data.results[0];
     if (!author) throw new Error('Author not found');
 
-    // Overall stats
-    const citations = author.cited_by_count ?? '—';
-    const hindex    = author.summary_stats?.h_index ?? '—';
-    const papers    = author.works_count ?? '—';
+    const citations = author.cited_by_count;
+    const hindex    = author.summary_stats?.h_index;
+    const papers    = author.works_count;
 
-    document.getElementById('stat-citations').textContent = citations;
-    document.getElementById('stat-hindex').textContent    = hindex;
-    document.getElementById('stat-papers').textContent    = papers;
-    ['stat-citations','stat-hindex','stat-papers'].forEach(id => {
-      document.getElementById(id).classList.remove('loading');
-    });
+    // Only update if numbers are plausible (sanity check)
+    if (citations >= 30 && hindex >= 3) {
+      setStats(citations, hindex, papers);
+    }
 
-    // Per-paper citations via OpenAlex works
-    const worksRes  = await fetch(`https://api.openalex.org/works?filter=authorships.author.id:${author.id}&per-page=50&mailto=contact@boudiaf.ai`);
+    // Per-paper live citations
+    const worksRes = await fetch(
+      `https://api.openalex.org/works?filter=authorships.author.id:${author.id}` +
+      `&per-page=50&mailto=boudiafa.github.io`);
+    if (!worksRes.ok) return;
     const worksData = await worksRes.json();
 
     worksData.results?.forEach(work => {
-      const doi   = work.doi?.replace('https://doi.org/','') ?? '';
+      const doi   = (work.doi || '').replace('https://doi.org/', '').toLowerCase();
       const count = work.cited_by_count ?? 0;
-
-      // Match to our hardcoded DOIs
       document.querySelectorAll('.pub-item[data-doi]').forEach(item => {
-        if(item.dataset.doi && doi.includes(item.dataset.doi.split('/').pop())) {
-          const citeEls = item.querySelectorAll('.pub-citations');
-          citeEls.forEach(el => {
-            el.innerHTML = '';
-            el.textContent = count > 0 ? `${count} citation${count!==1?'s':''}` : '';
+        const itemDoi = (item.dataset.doi || '').toLowerCase();
+        if (itemDoi && doi && (doi.includes(itemDoi) || itemDoi.includes(doi.split('/').pop()))) {
+          item.querySelectorAll('.pub-citations').forEach(el => {
+            el.textContent = count > 0 ? `${count} citation${count !== 1 ? 's' : ''}` : '';
           });
         }
       });
     });
 
-    // Clear any remaining spinners
-    document.querySelectorAll('.pub-citations .spinner').forEach(s => {
-      s.parentElement.textContent = '';
-    });
-
   } catch(err) {
-    console.warn('OpenAlex fetch failed:', err);
-    // Fall back to hardcoded values
-    document.getElementById('stat-citations').textContent = '55+';
-    document.getElementById('stat-hindex').textContent    = '4';
-    document.getElementById('stat-papers').textContent    = '13';
-    ['stat-citations','stat-hindex','stat-papers'].forEach(id => {
-      document.getElementById(id).classList.remove('loading');
-    });
-    document.querySelectorAll('.pub-citations .spinner').forEach(s => {
-      s.parentElement.textContent = '';
-    });
+    console.warn('OpenAlex fetch failed:', err.message);
+    // Fallback already set above — nothing more to do
   }
 }
 
