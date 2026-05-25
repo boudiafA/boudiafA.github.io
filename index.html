@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abderrahmene Boudiaf — AI Researcher</title>
+  <meta name="description" content="PhD researcher in Computer Vision, Vision-Language Models, and AI for Agriculture at Khalifa University, Abu Dhabi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0a0e17;
+      --bg2:       #0f1520;
+      --bg3:       #141c2e;
+      --border:    rgba(255,255,255,0.07);
+      --green:     #2ecc71;
+      --green-dim: #1a7a43;
+      --blue:      #4a9eff;
+      --blue-dim:  #1a4a8a;
+      --text:      #e8edf5;
+      --text-dim:  #7a8a9e;
+      --text-muted:#4a5568;
+      --serif:     'DM Serif Display', Georgia, serif;
+      --sans:      'DM Sans', system-ui, sans-serif;
+      --mono:      'DM Mono', 'Courier New', monospace;
+      --radius:    12px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+    ::selection { background: var(--green-dim); color: #fff; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--green-dim); border-radius: 3px; }
+
+    /* Canvas */
+    #bg-canvas { position: fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:0.4; }
+
+    /* Nav */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:100;
+      padding: 0 2rem; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,14,23,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: var(--serif); font-size: 1.1rem; color: var(--text); text-decoration: none; }
+    .nav-logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.82rem; font-weight: 500; color: var(--text-dim); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--green); }
+
+    /* Layout */
+    main { position: relative; z-index: 1; }
+    section { padding: 6rem 2rem; max-width: 1000px; margin: 0 auto; }
+    .section-label { font-family: var(--mono); font-size: 0.72rem; color: var(--green); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    h2 { font-family: var(--serif); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 400; color: var(--text); margin-bottom: 2.5rem; line-height: 1.2; }
+
+    /* Hero */
+    #hero { min-height: 100vh; display: flex; align-items: center; padding-top: 64px; max-width: 100%; padding-left: 0; padding-right: 0; }
+    .hero-inner { max-width: 1000px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 320px; gap: 4rem; align-items: center; width: 100%; }
+    .hero-greeting { font-family: var(--mono); font-size: 0.82rem; color: var(--green); letter-spacing: 0.1em; margin-bottom: 1rem; opacity:0; animation: fadeUp 0.6s ease 0.2s forwards; }
+    .hero-name { font-family: var(--serif); font-size: clamp(2.6rem, 5vw, 3.8rem); line-height: 1.05; color: var(--text); margin-bottom: 0.5rem; opacity:0; animation: fadeUp 0.6s ease 0.4s forwards; }
+    .hero-title { font-size: 1rem; color: var(--text-dim); font-weight: 300; margin-bottom: 1.5rem; opacity:0; animation: fadeUp 0.6s ease 0.5s forwards; }
+    .hero-title strong { color: var(--blue); font-weight: 500; }
+    .hero-bio { font-size: 0.92rem; color: var(--text-dim); line-height: 1.8; max-width: 520px; margin-bottom: 2rem; opacity:0; animation: fadeUp 0.6s ease 0.6s forwards; }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; opacity:0; animation: fadeUp 0.6s ease 0.7s forwards; }
+    .tag { font-family: var(--mono); font-size: 0.7rem; padding: 0.28rem 0.7rem; border-radius: 100px; border: 1px solid var(--border); color: var(--text-dim); background: var(--bg2); transition: all 0.2s; cursor: default; }
+    .tag:hover { border-color: var(--green); color: var(--green); }
+    .tag.green { border-color: var(--green-dim); color: var(--green); background: rgba(46,204,113,0.06); }
+    .hero-links { display: flex; gap: 1rem; flex-wrap: wrap; opacity:0; animation: fadeUp 0.6s ease 0.8s forwards; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.3rem; border-radius: var(--radius); font-size: 0.84rem; font-weight: 500; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; }
+    .btn-primary { background: var(--green); color: #0a0e17; }
+    .btn-primary:hover { background: #27ae60; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(46,204,113,0.3); }
+    .btn-outline { border: 1px solid var(--border); color: var(--text-dim); background: var(--bg2); }
+    .btn-outline:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-1px); }
+
+    /* Profile Card */
+    .hero-card { opacity:0; animation: fadeUp 0.6s ease 0.9s forwards; }
+    .profile-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 1.75rem; text-align: center; position: relative; overflow: hidden; }
+    .profile-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, var(--green), var(--blue)); }
+    .profile-avatar { width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 1rem; background: linear-gradient(135deg, var(--green-dim), var(--blue-dim)); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 2.2rem; color: white; border: 3px solid var(--border); }
+    .profile-name { font-family: var(--serif); font-size: 1rem; margin-bottom: 0.2rem; }
+    .profile-sub { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1.25rem; }
+
+    /* Live stats */
+    .profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1.25rem; }
+    .stat { background: var(--bg3); border-radius: 8px; padding: 0.6rem 0.3rem; border: 1px solid var(--border); }
+    .stat-num { font-family: var(--mono); font-size: 1.1rem; color: var(--green); font-weight: 500; display: block; }
+    .stat-num.loading { color: var(--text-muted); font-size: 0.8rem; animation: pulse 1.5s ease infinite; }
+    .stat-label { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .live-badge { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--mono); font-size: 0.6rem; color: var(--green); margin-bottom: 1rem; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease infinite; }
+
+    /* Social icons */
+    .profile-links { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; }
+    .icon-link { width: 34px; height: 34px; border-radius: 8px; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--text-dim); transition: all 0.2s; }
+    .icon-link:hover { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.08); }
+    .icon-link svg { width: 15px; height: 15px; fill: currentColor; }
+
+    /* About */
+    #about { border-top: 1px solid var(--border); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .about-text p { font-size: 0.92rem; color: var(--text-dim); line-height: 1.85; margin-bottom: 1rem; }
+    .about-text p strong { color: var(--text); font-weight: 500; }
+    .timeline { display: flex; flex-direction: column; gap: 1rem; }
+    .timeline-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-top: 6px; flex-shrink: 0; box-shadow: 0 0 10px rgba(46,204,113,0.5); }
+    .timeline-year { font-family: var(--mono); font-size: 0.68rem; color: var(--green); letter-spacing: 0.1em; margin-bottom: 0.1rem; }
+    .timeline-title { font-size: 0.88rem; font-weight: 500; color: var(--text); margin-bottom: 0.1rem; }
+    .timeline-sub { font-size: 0.78rem; color: var(--text-dim); }
+
+    /* Projects */
+    #projects { border-top: 1px solid var(--border); }
+    .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .project-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; transition: all 0.3s; position: relative; overflow: hidden; }
+    .project-card::after { content:''; position:absolute; inset:0; border-radius:var(--radius); opacity:0; transition:opacity 0.3s; pointer-events:none; }
+    .project-card.green-glow::after { box-shadow: inset 0 0 0 1px var(--green); }
+    .project-card.blue-glow::after  { box-shadow: inset 0 0 0 1px var(--blue); }
+    .project-card:hover { transform: translateY(-3px); border-color: transparent; }
+    .project-card:hover::after { opacity: 1; }
+    .project-card.featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
+    .project-badge { font-family: var(--mono); font-size: 0.63rem; padding: 0.2rem 0.6rem; border-radius: 100px; margin-bottom: 0.75rem; display: inline-block; letter-spacing: 0.08em; text-transform: uppercase; }
+    .badge-green { background: rgba(46,204,113,0.1); color: var(--green); border: 1px solid var(--green-dim); }
+    .badge-blue  { background: rgba(74,158,255,0.1); color: var(--blue);  border: 1px solid var(--blue-dim); }
+    .badge-gray  { background: var(--bg3); color: var(--text-dim); border: 1px solid var(--border); }
+    .project-title { font-family: var(--serif); font-size: 1.2rem; color: var(--text); margin-bottom: 0.5rem; }
+    .project-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 1rem; }
+    .project-metrics { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .metric { font-family: var(--mono); font-size: 0.75rem; color: var(--green); }
+    .metric span { color: var(--text-dim); }
+    .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .ptag { font-family: var(--mono); font-size: 0.63rem; padding: 0.2rem 0.5rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); }
+    .project-links { display: flex; gap: 0.75rem; }
+    .plink { font-size: 0.8rem; color: var(--text-dim); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; transition: color 0.2s; }
+    .plink:hover { color: var(--green); }
+    .term-block { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; font-family: var(--mono); font-size: 0.73rem; line-height: 1.8; color: var(--text-dim); }
+    .term-bar { display: flex; gap: 5px; margin-bottom: 0.75rem; }
+    .term-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .term-dot.r { background: #ff5f57; } .term-dot.y { background: #febc2e; } .term-dot.g { background: #28c840; }
+    .term-line .cmd { color: var(--green); } .term-line .num { color: var(--blue); } .term-line .str { color: #e8b96a; }
+    .term-cursor { display: inline-block; width: 7px; height: 13px; background: var(--green); vertical-align: middle; animation: blink 1s step-end infinite; }
+
+    /* Publications */
+    #publications { border-top: 1px solid var(--border); }
+    .pub-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .filter-btn { font-family: var(--mono); font-size: 0.7rem; padding: 0.32rem 0.85rem; border-radius: 100px; border: 1px solid var(--border); background: var(--bg2); color: var(--text-dim); cursor: pointer; transition: all 0.2s; letter-spacing: 0.05em; }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.06); }
+    .pub-list { display: flex; flex-direction: column; }
+    .pub-item { padding: 1.2rem 0.75rem; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 48px 1fr auto; gap: 1rem; align-items: start; transition: all 0.2s; border-radius: 6px; }
+    .pub-item:hover { background: rgba(255,255,255,0.02); }
+    .pub-year { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); padding-top: 3px; }
+    .pub-title { font-size: 0.88rem; font-weight: 500; color: var(--text); margin-bottom: 0.25rem; line-height: 1.4; }
+    .pub-authors { font-size: 0.77rem; color: var(--text-dim); margin-bottom: 0.25rem; }
+    .pub-authors strong { color: var(--blue); }
+    .pub-venue { font-size: 0.77rem; color: var(--text-muted); font-style: italic; }
+    .pub-right { text-align: right; }
+    .pub-citations { font-family: var(--mono); font-size: 0.68rem; color: var(--green); white-space: nowrap; }
+    .pub-citations.live { font-size: 0.65rem; }
+    .pub-link { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; display: block; transition: color 0.2s; margin-top: 0.25rem; }
+    .pub-link:hover { color: var(--green); }
+
+    /* GitHub Repos */
+    #github { border-top: 1px solid var(--border); }
+    .repos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .repo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; transition: all 0.25s; text-decoration: none; display: block; }
+    .repo-card:hover { border-color: rgba(46,204,113,0.4); transform: translateY(-2px); background: rgba(46,204,113,0.03); }
+    .repo-card.loading-card { opacity: 0.5; }
+    .repo-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.5rem; }
+    .repo-name { font-family: var(--mono); font-size: 0.82rem; color: var(--green); font-weight: 500; }
+    .repo-lang { font-family: var(--mono); font-size: 0.63rem; color: var(--text-muted); background: var(--bg3); border: 1px solid var(--border); padding: 0.1rem 0.4rem; border-radius: 4px; }
+    .repo-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 0.75rem; }
+    .repo-footer { display: flex; gap: 1rem; }
+    .repo-stat { font-family: var(--mono); font-size: 0.68rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; }
+    .repo-stat svg { width: 12px; height: 12px; fill: currentColor; }
+    .repos-loading { text-align: center; padding: 2rem; font-family: var(--mono); font-size: 0.8rem; color: var(--text-muted); }
+    .repos-error { text-align: center; padding: 1.5rem; font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); }
+
+    /* Skills */
+    #skills { border-top: 1px solid var(--border); }
+    .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .skill-group { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; transition: border-color 0.2s; }
+    .skill-group:hover { border-color: rgba(46,204,113,0.3); }
+    .skill-group-title { font-family: var(--mono); font-size: 0.68rem; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.85rem; }
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .skill-pill { font-size: 0.73rem; padding: 0.22rem 0.55rem; background: var(--bg3); border-radius: 6px; color: var(--text-dim); border: 1px solid var(--border); }
+
+    /* Contact */
+    #contact { border-top: 1px solid var(--border); text-align: center; padding-bottom: 4rem; }
+    .contact-sub { font-size: 0.92rem; color: var(--text-dim); margin-bottom: 2.5rem; max-width: 460px; margin-left: auto; margin-right: auto; margin-top: 0.5rem; }
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    /* Footer */
+    footer { position: relative; z-index: 1; text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); }
+    footer a { color: var(--green); text-decoration: none; }
+
+    /* Animations */
+    @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+    @keyframes blink  { 0%,100% { opacity:1; } 50% { opacity:0; } }
+    @keyframes pulse  { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+    @keyframes pulse-dot { 0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(46,204,113,0.4); } 50% { opacity:0.7; box-shadow: 0 0 0 4px rgba(46,204,113,0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .reveal { opacity:0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity:1; transform: translateY(0); }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 0.5rem; }
+
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-card  { display: none; }
+      .about-grid, .projects-grid, .skills-grid, .repos-grid { grid-template-columns: 1fr; }
+      .project-card.featured { grid-template-columns: 1fr; }
+      .term-block { display: none; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- Nav -->
+<nav>
+  <a href="#hero" class="nav-logo">A<span>.</span>Boudiaf</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#publications">Publications</a></li>
+    <li><a href="#github">GitHub</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="hero-greeting">// PhD Candidate · Khalifa University, Abu Dhabi</p>
+      <h1 class="hero-name">Abderrahmene<br>Boudiaf</h1>
+      <p class="hero-title"><strong>Computer Vision</strong> &amp; <strong>Foundation Models</strong><br>Specialist in AI for Agriculture</p>
+      <p class="hero-bio">I build AI systems that see, understand, and reason about the visual world. My work spans vision–language models, multimodal LLMs, and semantic segmentation — with a focus on making foundation models work in precision agriculture and real-world deployment.</p>
+      <div class="hero-tags">
+        <span class="tag green">CropVLM</span>
+        <span class="tag green">AgriChat</span>
+        <span class="tag green">SegRAG</span>
+        <span class="tag">Vision-Language Models</span>
+        <span class="tag">LLMs</span>
+        <span class="tag">RAG</span>
+        <span class="tag">Few-Shot Learning</span>
+        <span class="tag">Underwater Vision</span>
+      </div>
+      <div class="hero-links">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="boudiaf_cv.pdf" class="btn btn-outline" target="_blank">Download CV</a>
+        <a href="https://scholar.google.com/citations?user=YOUR_ID" class="btn btn-outline" target="_blank">Google Scholar</a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="profile-card">
+        <div class="profile-avatar">AB</div>
+        <div class="profile-name">Abderrahmene Boudiaf</div>
+        <div class="profile-sub">Khalifa University · Abu Dhabi, UAE</div>
+        <div class="live-badge"><span class="live-dot"></span> Live data from OpenAlex</div>
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="stat-num loading" id="stat-citations"><span class="spinner"></span></span>
+            <span class="stat-label">Citations</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num loading" id="stat-hindex"><span class="spinner"></span></span>
+            <span class="stat-label">h-index</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num loading" id="stat-papers"><span class="spinner"></span></span>
+            <span class="stat-label">Papers</span>
+          </div>
+        </div>
+        <div class="profile-links">
+          <a href="https://github.com/boudiafA" class="icon-link" target="_blank" title="GitHub">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+          <a href="https://scholar.google.com/citations?user=YOUR_ID" class="icon-link" target="_blank" title="Google Scholar">
+            <svg viewBox="0 0 24 24"><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 10a8 8 0 0 1 7.162 3.44L24 9.5z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/abderrahman-boudiaf-188555108/" class="icon-link" target="_blank" title="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://arxiv.org/search/?searchtype=author&query=Boudiaf+A" class="icon-link" target="_blank" title="arXiv">
+            <svg viewBox="0 0 24 24"><path d="M8.3 0L0 12l8.3 12h2.25L2.25 12 10.55 0zm5.2 0L5.19 12l8.3 12h2.24L7.44 12 15.74 0zm6.02 0l-8.3 12 8.3 12h2.24L13.46 12 21.76 0z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="section-label">01 / About</div>
+  <h2>The Research Story</h2>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>I started at <strong>Khalifa University</strong> working on autonomous robots — teaching machines to navigate through fog, dust, and rocky terrain using only camera input. That early work gave me a deep appreciation for how hard it is to make vision systems robust in the real world.</p>
+      <p>My PhD pivoted toward <strong>foundation models</strong>. As transformers and LLMs reshaped the field, I became focused on one question: can we make these powerful models truly useful for domains where data is scarce, labels are expensive, and mistakes have real consequences?</p>
+      <p>That question led me to <strong>agriculture</strong> — one of the most data-constrained, high-stakes domains imaginable. I built CropVLM, a VLM that recognises 37 crop species without retraining, and AgriChat, a multimodal chatbot that diagnoses plant disease from a single field image. Both are open-source.</p>
+      <p>I am recognised on the <strong>UAE Research Map</strong> and received the <strong>Excellency Award from the Provost</strong> of Khalifa University in 2024.</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item"><div class="timeline-dot"></div><div><div class="timeline-year">2026</div><div class="timeline-title">CropVLM &amp; AgriChat released</div><div class="timeline-sub">Open-source foundation models for precision agriculture</div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div><div class="timeline-year">2024</div><div class="timeline-title">Excellency Award — Khalifa University</div><div class="timeline-sub">Provost award for academic excellence</div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div><div class="timeline-year">2024</div><div class="timeline-title">IEEE ICIP 2024 — 2 papers</div><div class="timeline-sub">CLIP-based threat detection &amp; LLM–VLM anomaly assessment</div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div><div class="timeline-year">2022</div><div class="timeline-title">MSc — Robotics &amp; Autonomous Systems</div><div class="timeline-sub">Khalifa University, Abu Dhabi</div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div><div class="timeline-year">2022</div><div class="timeline-title">ICIAP 2022 — Springer LNCS</div><div class="timeline-sub">Underwater image enhancement (29 citations)</div></div></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div><div class="timeline-year">2020</div><div class="timeline-title">PhD started — Khalifa University</div><div class="timeline-sub">Visual Recognition Group · Supervisor: Dr. Sajid Javed</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects">
+  <div class="section-label">02 / Projects</div>
+  <h2>Key Research Projects</h2>
+  <div class="projects-grid">
+    <div class="project-card featured green-glow reveal">
+      <div>
+        <div class="project-badge badge-green">★ Featured · 2026</div>
+        <h3 class="project-title">CropVLM</h3>
+        <p class="project-desc">A Vision-Language Model adapted to agriculture via Domain-Specific Semantic Alignment. Trained on 52,987 curated image–caption pairs spanning 37 crop species. HOS-Net enables zero-shot crop detection from text descriptions alone — no retraining required.</p>
+        <div class="project-metrics">
+          <div class="metric">72.51% <span>zero-shot acc.</span></div>
+          <div class="metric">49.17 AP₅₀ <span>novel species</span></div>
+          <div class="metric">37 <span>crop species</span></div>
+        </div>
+        <div class="project-tags"><span class="ptag">VLM</span><span class="ptag">CLIP</span><span class="ptag">Zero-Shot</span><span class="ptag">Agriculture</span><span class="ptag">Open-Vocabulary</span></div>
+        <div class="project-links">
+          <a href="https://github.com/boudiafA/CropVLM" class="plink" target="_blank">⬡ GitHub</a>
+          <a href="https://arxiv.org/abs/2605.03259" class="plink" target="_blank">↗ arXiv</a>
+        </div>
+      </div>
+      <div class="term-block">
+        <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div>
+        <div class="term-line"><span class="cmd">$</span> python cropvlm_infer.py</div>
+        <div class="term-line">Loading CropVLM weights...</div>
+        <div class="term-line">Model ready. 37 species.</div><br>
+        <div class="term-line"><span class="cmd">Query:</span> <span class="str">"diseased mango leaf"</span></div>
+        <div class="term-line">Running HOS-Net...</div><br>
+        <div class="term-line">→ Class: <span class="str">Mangifera indica</span></div>
+        <div class="term-line">→ Conf:  <span class="num">0.9471</span></div>
+        <div class="term-line">→ AP₅₀: <span class="num">49.17</span></div><br>
+        <div class="term-line"><span class="cmd">$</span> <span class="term-cursor"></span></div>
+      </div>
+    </div>
+    <div class="project-card green-glow reveal">
+      <div class="project-badge badge-green">2026</div>
+      <h3 class="project-title">AgriChat</h3>
+      <p class="project-desc">Multimodal LLM fine-tuned with LoRA on AgriMM — 121k+ images, 607k+ QA pairs, 3,000+ plant classes. V2VK pipeline eliminates hallucinations via verified phytopathological grounding.</p>
+      <div class="project-metrics"><div class="metric">121k+ <span>images</span></div><div class="metric">3,000+ <span>classes</span></div></div>
+      <div class="project-tags"><span class="ptag">MLLM</span><span class="ptag">LoRA</span><span class="ptag">Agriculture</span><span class="ptag">VQA</span></div>
+      <div class="project-links"><a href="https://github.com/boudiafA/AgriChat" class="plink" target="_blank">⬡ GitHub</a><a href="https://arxiv.org/abs/2603.16934" class="plink" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="project-card blue-glow reveal">
+      <div class="project-badge badge-blue">2026</div>
+      <h3 class="project-title">SegRAG</h3>
+      <p class="project-desc">Training-free retrieval-augmented semantic segmentation. Augments open-vocabulary VLMs with RAG for pixel-level understanding of arbitrary categories without retraining.</p>
+      <div class="project-tags"><span class="ptag">RAG</span><span class="ptag">Segmentation</span><span class="ptag">Zero-Shot</span><span class="ptag">VLM</span></div>
+      <div class="project-links"><a href="https://arxiv.org/abs/2605.17630" class="plink" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="project-card blue-glow reveal">
+      <div class="project-badge badge-gray">2022 · 29 citations</div>
+      <h3 class="project-title">Underwater Image Enhancement</h3>
+      <p class="project-desc">Pre-trained transformer applied to underwater image restoration. State-of-the-art quality improvement without domain-specific retraining. Published ICIAP 2022, Springer LNCS.</p>
+      <div class="project-tags"><span class="ptag">Transformer</span><span class="ptag">Image Restoration</span><span class="ptag">Underwater</span></div>
+      <div class="project-links"><a href="https://link.springer.com/chapter/10.1007/978-3-031-06433-3_41" class="plink" target="_blank">↗ Springer</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- Publications -->
+<section id="publications">
+  <div class="section-label">03 / Publications</div>
+  <h2>Research Publications</h2>
+  <div class="pub-filters">
+    <button class="filter-btn active" data-filter="all">All (13)</button>
+    <button class="filter-btn" data-filter="agriculture">Agriculture</button>
+    <button class="filter-btn" data-filter="vision">Vision &amp; LLM</button>
+    <button class="filter-btn" data-filter="robotics">Robotics</button>
+    <button class="filter-btn" data-filter="preprint">Preprints</button>
+  </div>
+  <div class="pub-list reveal">
+    <div class="pub-item" data-cat="agriculture preprint" data-doi="10.48550/arXiv.2605.03259">
+      <div class="pub-year">2026</div>
+      <div class="pub-body">
+        <div class="pub-title">CropVLM: A Domain-Adapted Vision-Language Model for Open-Set Crop Analysis</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, S. Javed</div>
+        <div class="pub-venue">arXiv:2605.03259</div>
+      </div>
+      <div class="pub-right"><a href="https://arxiv.org/abs/2605.03259" class="pub-link" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="pub-item" data-cat="agriculture preprint" data-doi="10.48550/arXiv.2603.16934">
+      <div class="pub-year">2026</div>
+      <div class="pub-body">
+        <div class="pub-title">AgriChat: A Multimodal Large Language Model for Agriculture Image Understanding</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, I. Hussain, S. Javed</div>
+        <div class="pub-venue">arXiv:2603.16934</div>
+      </div>
+      <div class="pub-right"><a href="https://arxiv.org/abs/2603.16934" class="pub-link" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="pub-item" data-cat="vision preprint" data-doi="10.48550/arXiv.2605.17630">
+      <div class="pub-year">2026</div>
+      <div class="pub-body">
+        <div class="pub-title">SegRAG: Training-Free Retrieval-Augmented Semantic Segmentation</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, I. Hussain, S. Javed</div>
+        <div class="pub-venue">arXiv:2605.17630</div>
+      </div>
+      <div class="pub-right"><a href="https://arxiv.org/abs/2605.17630" class="pub-link" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="pub-item" data-cat="vision" data-doi="10.1109/ICIP51287.2024.10647975">
+      <div class="pub-year">2024</div>
+      <div class="pub-body">
+        <div class="pub-title">CLIFS: CLIP-Driven Few-Shot Learning for Baggage Threat Classification</div>
+        <div class="pub-authors">A. Ahmed, D. Velayudhan, M. ElMezain, M. Al Radi, <strong>A. Boudiaf</strong>, T. Hassan, et al.</div>
+        <div class="pub-venue">IEEE ICIP 2024, pp. 753–759</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations" id="cite-clifs">11 citations</span></div>
+    </div>
+    <div class="pub-item" data-cat="vision" data-doi="10.1109/ICIP51287.2024.10647983">
+      <div class="pub-year">2024</div>
+      <div class="pub-body">
+        <div class="pub-title">SMO-CLIP: Enhancing Anomalous Smoke Density Assessment Using a Hybrid LLM–VLM Approach</div>
+        <div class="pub-authors">P. Li, M. Al Radi, M. S. Elmezain, A. H. Ahmed, <strong>A. Boudiaf</strong>, et al.</div>
+        <div class="pub-venue">IEEE ICIP 2024, pp. 760–765</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations" id="cite-smoClip">4 citations</span></div>
+    </div>
+    <div class="pub-item" data-cat="vision" data-doi="10.1007/978-3-031-06433-3_41">
+      <div class="pub-year">2022</div>
+      <div class="pub-body">
+        <div class="pub-title">Underwater Image Enhancement Using Pre-trained Transformer</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, Y. Guo, A. Ghimire, N. Werghi, G. De Masi, S. Javed, J. Dias</div>
+        <div class="pub-venue">ICIAP 2022, LNCS vol. 13233, pp. 480–488, Springer</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations live" id="cite-underwater"><span class="spinner"></span></span><a href="https://link.springer.com/chapter/10.1007/978-3-031-06433-3_41" class="pub-link" target="_blank">↗ Springer</a></div>
+    </div>
+    <div class="pub-item" data-cat="vision">
+      <div class="pub-year">2025</div>
+      <div class="pub-body">
+        <div class="pub-title">BB-UWCrack: A Benchmark Dataset for Bounding Box Crack Detection in Underwater Structures</div>
+        <div class="pub-authors">M. ElMezain, <strong>A. Boudiaf</strong>, M. Abujabal, A. Ghimire, G. De Masi</div>
+        <div class="pub-venue">ASET 2025</div>
+      </div>
+      <div class="pub-right"></div>
+    </div>
+    <div class="pub-item" data-cat="robotics" data-doi="10.1109/ROSE56499.2022.9977444">
+      <div class="pub-year">2022</div>
+      <div class="pub-body">
+        <div class="pub-title">Image-Based Obstacle Avoidance Using 3DConv Network for Rocky Environments</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, A. Al Sumaiti, J. Dias</div>
+        <div class="pub-venue">IEEE ROSE 2022</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations live" id="cite-obstacle"><span class="spinner"></span></span></div>
+    </div>
+    <div class="pub-item" data-cat="robotics">
+      <div class="pub-year">2024</div>
+      <div class="pub-body">
+        <div class="pub-title">Reinforcement Learning-Based Optimal Control Design for Active Suspension Systems</div>
+        <div class="pub-authors">A. Ahmad, M. Al Radi, A. Ahmad, <strong>A. Boudiaf</strong></div>
+        <div class="pub-venue">ASET 2024</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations">5 citations</span></div>
+    </div>
+    <div class="pub-item" data-cat="robotics">
+      <div class="pub-year">2025</div>
+      <div class="pub-body">
+        <div class="pub-title">Robotic Optimal Path Planning via Multi-Objective Dolphin Echolocation Optimization</div>
+        <div class="pub-authors">M. Al Radi, A. Ahmad, <strong>A. Boudiaf</strong></div>
+        <div class="pub-venue">ASET 2025</div>
+      </div>
+      <div class="pub-right"></div>
+    </div>
+    <div class="pub-item" data-cat="vision">
+      <div class="pub-year">2024</div>
+      <div class="pub-body">
+        <div class="pub-title">Machine Learning-Based Multivariate Classification of Cardiac Autonomic Neuropathy via Imbalanced ECG Recordings</div>
+        <div class="pub-authors">M. Al Radi, A. Ahmad, A. Ahmad, <strong>A. Boudiaf</strong>, et al.</div>
+        <div class="pub-venue">ASET 2024</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations">1 citation</span></div>
+    </div>
+    <div class="pub-item" data-cat="vision preprint">
+      <div class="pub-year">2026</div>
+      <div class="pub-body">
+        <div class="pub-title">Self-Supervised Plankton Classification via DINO and Gradient-Based Loss Re-weighting</div>
+        <div class="pub-authors">A. Ahmad, Z. Habash, A. Ahmad, M. Alradi, <strong>A. Boudiaf</strong>, N. Werghi, et al.</div>
+        <div class="pub-venue">Under Review, 2026</div>
+      </div>
+      <div class="pub-right"></div>
+    </div>
+    <div class="pub-item" data-cat="robotics">
+      <div class="pub-year">2022</div>
+      <div class="pub-body">
+        <div class="pub-title">Robot Navigation in Low Visibility Conditions</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong></div>
+        <div class="pub-venue">MSc Thesis, Khalifa University</div>
+      </div>
+      <div class="pub-right"></div>
+    </div>
+  </div>
+</section>
+
+<!-- GitHub Repos -->
+<section id="github">
+  <div class="section-label">04 / GitHub</div>
+  <h2>Latest Repositories <span style="font-family:var(--mono);font-size:0.7rem;color:var(--green);font-weight:400;">· live from GitHub API</span></h2>
+  <div id="repos-container">
+    <div class="repos-loading"><span class="spinner"></span> Loading repositories from GitHub...</div>
+  </div>
+  <div style="text-align:center; margin-top:1.5rem;">
+    <a href="https://github.com/boudiafA" class="btn btn-outline" target="_blank">View all on GitHub →</a>
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills">
+  <div class="section-label">05 / Skills</div>
+  <h2>Technical Expertise</h2>
+  <div class="skills-grid reveal">
+    <div class="skill-group"><div class="skill-group-title">Deep Learning &amp; Vision</div><div class="skill-pills"><span class="skill-pill">PyTorch</span><span class="skill-pill">JAX</span><span class="skill-pill">CLIP</span><span class="skill-pill">ViT</span><span class="skill-pill">DINO</span><span class="skill-pill">SAM</span><span class="skill-pill">Deformable DETR</span><span class="skill-pill">OpenCLIP</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">LLM &amp; Multimodal</div><div class="skill-pills"><span class="skill-pill">HuggingFace</span><span class="skill-pill">LLaVA</span><span class="skill-pill">LoRA / PEFT</span><span class="skill-pill">RAG</span><span class="skill-pill">Instruction Tuning</span><span class="skill-pill">VQA</span><span class="skill-pill">Prompt Engineering</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">Agriculture AI</div><div class="skill-pills"><span class="skill-pill">Plant Phenotyping</span><span class="skill-pill">Disease Detection</span><span class="skill-pill">Crop Detection</span><span class="skill-pill">Open-Set Recognition</span><span class="skill-pill">Agronomic VQA</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">MLOps &amp; Deployment</div><div class="skill-pills"><span class="skill-pill">AWS</span><span class="skill-pill">Docker</span><span class="skill-pill">Git</span><span class="skill-pill">W&amp;B</span><span class="skill-pill">ONNX</span><span class="skill-pill">GitHub Actions</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">Programming</div><div class="skill-pills"><span class="skill-pill">Python</span><span class="skill-pill">MATLAB</span><span class="skill-pill">C++</span><span class="skill-pill">NumPy</span><span class="skill-pill">OpenCV</span><span class="skill-pill">Pandas</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">Robotics</div><div class="skill-pills"><span class="skill-pill">ROS</span><span class="skill-pill">Path Planning</span><span class="skill-pill">RL Control</span><span class="skill-pill">3D Conv</span><span class="skill-pill">Sensor Fusion</span></div></div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="section-label">06 / Contact</div>
+  <h2>Get In Touch</h2>
+  <p class="contact-sub">Open to academic collaborations, postdoc opportunities, and industry roles in the UAE and GCC. Feel free to reach out.</p>
+  <div class="contact-links">
+    <a href="mailto:100058322@ku.ac.ae" class="btn btn-primary">✉ Send Email</a>
+    <a href="https://www.linkedin.com/in/abderrahman-boudiaf-188555108/" class="btn btn-outline" target="_blank">LinkedIn</a>
+    <a href="https://github.com/boudiafA" class="btn btn-outline" target="_blank">GitHub</a>
+    <a href="https://scholar.google.com/citations?user=YOUR_ID" class="btn btn-outline" target="_blank">Google Scholar</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Abderrahmene Boudiaf &nbsp;·&nbsp; Stats powered by <a href="https://openalex.org" target="_blank">OpenAlex</a> &amp; <a href="https://github.com/boudiafA" target="_blank">GitHub API</a> &nbsp;·&nbsp; <a href="https://github.com/boudiafA/boudiafA.github.io" target="_blank">View Source</a></p>
+</footer>
+
+<script>
+// ── Particle canvas ──────────────────────────────────────────
+const canvas = document.getElementById('bg-canvas');
+const ctx    = canvas.getContext('2d');
+let particles = [], W, H;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+function mkP() { return { x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.4+0.3, vx: (Math.random()-0.5)*0.15, vy: (Math.random()-0.5)*0.15, a: Math.random() }; }
+function initP() { particles = Array.from({length:110}, mkP); }
+function draw() {
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(46,204,113,${p.a*0.3})`; ctx.fill();
+  });
+  for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++) {
+    const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y, d=Math.sqrt(dx*dx+dy*dy);
+    if(d<90){ ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y);
+      ctx.strokeStyle=`rgba(46,204,113,${(1-d/90)*0.06})`; ctx.lineWidth=0.5; ctx.stroke(); }
+  }
+  requestAnimationFrame(draw);
+}
+window.addEventListener('resize', ()=>{ resize(); initP(); });
+resize(); initP(); draw();
+
+// ── Scroll reveal ────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Nav active ───────────────────────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if(window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === '#'+current); });
+});
+
+// ── Publication filter ───────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.pub-item').forEach(item => {
+      item.style.display = (f==='all' || (item.dataset.cat||'').includes(f)) ? '' : 'none';
+    });
+  });
+});
+
+// ── OpenAlex — live citations & h-index ──────────────────────
+async function loadOpenAlex() {
+  try {
+    const res  = await fetch('https://api.openalex.org/authors?search=Abderrahmene+Boudiaf&filter=affiliations.institution.country_code:AE&mailto=contact@boudiaf.ai');
+    const data = await res.json();
+    const author = data.results?.[0];
+    if (!author) throw new Error('Author not found');
+
+    // Overall stats
+    const citations = author.cited_by_count ?? '—';
+    const hindex    = author.summary_stats?.h_index ?? '—';
+    const papers    = author.works_count ?? '—';
+
+    document.getElementById('stat-citations').textContent = citations;
+    document.getElementById('stat-hindex').textContent    = hindex;
+    document.getElementById('stat-papers').textContent    = papers;
+    ['stat-citations','stat-hindex','stat-papers'].forEach(id => {
+      document.getElementById(id).classList.remove('loading');
+    });
+
+    // Per-paper citations via OpenAlex works
+    const worksRes  = await fetch(`https://api.openalex.org/works?filter=authorships.author.id:${author.id}&per-page=50&mailto=contact@boudiaf.ai`);
+    const worksData = await worksRes.json();
+
+    worksData.results?.forEach(work => {
+      const doi   = work.doi?.replace('https://doi.org/','') ?? '';
+      const count = work.cited_by_count ?? 0;
+
+      // Match to our hardcoded DOIs
+      document.querySelectorAll('.pub-item[data-doi]').forEach(item => {
+        if(item.dataset.doi && doi.includes(item.dataset.doi.split('/').pop())) {
+          const citeEls = item.querySelectorAll('.pub-citations');
+          citeEls.forEach(el => {
+            el.innerHTML = '';
+            el.textContent = count > 0 ? `${count} citation${count!==1?'s':''}` : '';
+          });
+        }
+      });
+    });
+
+    // Clear any remaining spinners
+    document.querySelectorAll('.pub-citations .spinner').forEach(s => {
+      s.parentElement.textContent = '';
+    });
+
+  } catch(err) {
+    console.warn('OpenAlex fetch failed:', err);
+    // Fall back to hardcoded values
+    document.getElementById('stat-citations').textContent = '55+';
+    document.getElementById('stat-hindex').textContent    = '4';
+    document.getElementById('stat-papers').textContent    = '13';
+    ['stat-citations','stat-hindex','stat-papers'].forEach(id => {
+      document.getElementById(id).classList.remove('loading');
+    });
+    document.querySelectorAll('.pub-citations .spinner').forEach(s => {
+      s.parentElement.textContent = '';
+    });
+  }
+}
+
+// ── GitHub — live repos ──────────────────────────────────────
+async function loadGitHub() {
+  const container = document.getElementById('repos-container');
+  try {
+    const res  = await fetch('https://api.github.com/users/boudiafA/repos?sort=updated&per_page=6');
+    const repos = await res.json();
+
+    if (!Array.isArray(repos) || repos.length === 0) throw new Error('No repos');
+
+    const langColors = {
+      Python:'#3572A5', JavaScript:'#f1e05a', TypeScript:'#2b7489',
+      Jupyter:'#DA5B0B', MATLAB:'#e16737', 'C++':'#f34b7d',
+      HTML:'#e34c26', CSS:'#563d7c', Shell:'#89e051'
+    };
+
+    const grid = document.createElement('div');
+    grid.className = 'repos-grid';
+
+    repos.forEach(repo => {
+      const updated = new Date(repo.updated_at);
+      const ago     = timeAgo(updated);
+      const color   = langColors[repo.language] || '#8b949e';
+
+      grid.innerHTML += `
+        <a href="${repo.html_url}" class="repo-card" target="_blank">
+          <div class="repo-header">
+            <span class="repo-name">${repo.name}</span>
+            ${repo.language ? `<span class="repo-lang" style="border-color:${color}22;color:${color}">${repo.language}</span>` : ''}
+          </div>
+          <p class="repo-desc">${repo.description || 'No description provided.'}</p>
+          <div class="repo-footer">
+            <span class="repo-stat">
+              <svg viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+              ${repo.stargazers_count}
+            </span>
+            <span class="repo-stat">
+              <svg viewBox="0 0 16 16"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0zM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0z"/></svg>
+              ${repo.forks_count}
+            </span>
+            <span class="repo-stat" style="margin-left:auto; font-size:0.62rem; color:var(--text-muted)">
+              ${ago}
+            </span>
+          </div>
+        </a>`;
+    });
+
+    container.innerHTML = '';
+    container.appendChild(grid);
+
+    // animate cards in
+    grid.querySelectorAll('.repo-card').forEach((card, i) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(16px)';
+      card.style.transition = `opacity 0.4s ease ${i*0.08}s, transform 0.4s ease ${i*0.08}s`;
+      setTimeout(() => { card.style.opacity='1'; card.style.transform='translateY(0)'; }, 50);
+    });
+
+  } catch(err) {
+    console.warn('GitHub fetch failed:', err);
+    container.innerHTML = `<div class="repos-error">Could not load repositories. <a href="https://github.com/boudiafA" target="_blank" style="color:var(--green)">View on GitHub →</a></div>`;
+  }
+}
+
+function timeAgo(date) {
+  const diff = Math.floor((Date.now() - date) / 1000);
+  if(diff < 60)    return `${diff}s ago`;
+  if(diff < 3600)  return `${Math.floor(diff/60)}m ago`;
+  if(diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  if(diff < 2592000) return `${Math.floor(diff/86400)}d ago`;
+  return `${Math.floor(diff/2592000)}mo ago`;
+}
+
+// Run on load
+loadOpenAlex();
+loadGitHub();
+</script>
+</body>
+</html>
