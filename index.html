@@ -227,6 +227,7 @@
     <li><a href="#about">About</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#publications">Publications</a></li>
+    <li><a href="#agrichat">AgriChat</a></li>
     <li><a href="#github">GitHub</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -378,6 +379,217 @@
   </div>
 </section>
 
+
+<!-- AgriChat Demo -->
+<section id="agrichat">
+  <div class="section-label">04 / AgriChat Demo</div>
+  <h2>AgriChat in Action</h2>
+  <p style="font-size:0.92rem;color:var(--text-dim);margin-bottom:2rem;max-width:600px;line-height:1.8;">
+    A multimodal agricultural AI assistant that diagnoses plant species, detects diseases,
+    and assesses fruit ripeness from a single field image — powered by a LoRA fine-tuned
+    foundation model trained on 121k+ agricultural images.
+  </p>
+
+  <div style="max-width:520px;margin:0 auto;">
+
+    <style>
+      #aw * { box-sizing: border-box; }
+      .mr  { display:flex; align-items:flex-end; gap:8px; opacity:0; transform:translateY(10px); transition:opacity 0.45s cubic-bezier(.4,0,.2,1), transform 0.45s cubic-bezier(.4,0,.2,1); }
+      .mr.show { opacity:1; transform:translateY(0); }
+      .bub   { max-width:82%; padding:9px 13px; font-size:0.84rem; line-height:1.65; border:1px solid rgba(255,255,255,0.07); }
+      .bub-b { border-radius:4px 14px 14px 14px; background:var(--bg2); color:var(--text); }
+      .bub-u { border-radius:14px 4px 14px 14px; background:rgba(46,158,255,0.15); color:#a8d4ff; }
+      .avt   { width:28px; height:28px; border-radius:50%; background:rgba(46,204,113,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; }
+      .wdot  { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.2); display:inline-block; transition:background 0.2s; }
+      .wpip  { width:7px; height:7px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); background:transparent; transition:background 0.35s,border-color 0.35s; cursor:pointer; }
+      .wpip.on { background:var(--green); border-color:var(--green); }
+      #acw   { padding:14px 16px; display:flex; flex-direction:column; gap:10px; min-height:300px; overflow:hidden; transition:opacity 0.45s cubic-bezier(.4,0,.2,1); }
+      #apb   { height:2px; background:var(--green); width:0%; border-radius:0 2px 2px 0; }
+      #asl   { font-size:0.68rem; font-weight:500; padding:3px 10px; border-radius:100px; background:rgba(46,204,113,0.1); color:var(--green); border:1px solid rgba(46,204,113,0.25); transition:opacity 0.3s; font-family:var(--mono); }
+      .sc-img { width:100%; max-height:155px; object-fit:cover; border-radius:10px; border:1px solid rgba(255,255,255,0.07); opacity:0; transform:scale(0.96); transition:opacity 0.5s cubic-bezier(.4,0,.2,1),transform 0.5s cubic-bezier(.4,0,.2,1); display:block; }
+      .sc-img.show { opacity:1; transform:scale(1); }
+      .em-fb  { text-align:center; padding:20px; border-radius:10px; border:1px solid rgba(255,255,255,0.07); background:var(--bg2); font-size:52px; opacity:0; transform:scale(0.94); transition:opacity 0.5s cubic-bezier(.4,0,.2,1),transform 0.5s cubic-bezier(.4,0,.2,1); }
+      .em-fb.show { opacity:1; transform:scale(1); }
+    </style>
+
+    <div id="aw">
+      <div style="background:var(--bg2);border-radius:16px;border:1px solid rgba(255,255,255,0.07);overflow:hidden;">
+
+        <div style="height:2px;background:rgba(255,255,255,0.05);"><div id="apb"></div></div>
+
+        <div style="background:var(--bg3);border-bottom:1px solid rgba(255,255,255,0.07);padding:10px 16px;display:flex;align-items:center;gap:10px;">
+          <div class="avt">🌱</div>
+          <div>
+            <div style="font-size:0.84rem;font-weight:500;color:var(--text);">AgriChat</div>
+            <div style="font-size:0.7rem;color:var(--text-dim);display:flex;align-items:center;gap:4px;">
+              <span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;"></span>
+              Agricultural AI Assistant
+            </div>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+            <span id="asl">Plant Species ID</span>
+            <div style="display:flex;gap:5px;align-items:center;" id="apips"></div>
+          </div>
+        </div>
+
+        <div id="acw"></div>
+
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:1.5rem;display:flex;gap:1rem;justify-content:center;">
+      <a href="https://github.com/boudiafA/AgriChat" class="btn btn-outline" target="_blank">⬡ GitHub</a>
+      <a href="https://arxiv.org/abs/2603.16934" class="btn btn-outline" target="_blank">↗ arXiv Paper</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const SC=[
+    { label:"Plant Species ID", img:"assets/images/ChatBot_1.png", emoji:"🌿", alt:"Globe artichoke plant",
+      msgs:[
+        {r:"u",t:"Based on the plant's visible features and its surrounding environment, identify the most likely plant species."},
+        {r:"b",t:"The plant is <strong>Cynara scolymus</strong>, commonly known as the globe artichoke, a cultivated variety of <em>Cynara cardunculus</em>."},
+        {r:"u",t:"What is its native range?"},
+        {r:"b",t:"Its native range is the <strong>Mediterranean region</strong>."},
+      ]
+    },
+    { label:"Disease Detection", img:"assets/images/ChatBot_2.png", emoji:"🍌", alt:"Banana leaf with disease",
+      msgs:[
+        {r:"u",t:"Given this image of a banana leaf, determine whether the plant appears healthy or unhealthy."},
+        {r:"b",t:"The plant appears <strong>unhealthy</strong> — numerous brown spots with yellow halos indicate infection by <strong>Sigatoka disease</strong> caused by <strong><em>Mycosphaerella fijiensis</em></strong> (anamorph <em>Paracercospora fijiensis</em>)."},
+      ]
+    },
+    { label:"Fruit Ripeness", img:"assets/images/ChatBot_3.png", emoji:"🥭", alt:"Mango tree with fruits",
+      msgs:[
+        {r:"u",t:"Analyze the visible mangos and estimate the total number in the image and the ripeness level of each mango."},
+        {r:"b",t:"The image shows a <strong>tree with nine mangos</strong>, likely <strong>ripe or nearly ripe</strong> — colors range from <strong>green to orange-yellow</strong>, indicating varying maturity stages."},
+      ]
+    }
+  ];
+
+  const TY=850,GAP=480,PAUSE=3000,FADE=480;
+  let cur=0,tms=[],raf=null,di=null,t0=null;
+
+  function clr(){ tms.forEach(clearTimeout); tms=[]; cancelAnimationFrame(raf); raf=null; stopD(); }
+  function af(fn,d){ tms.push(setTimeout(fn,d)); }
+
+  function mkPips(){
+    const c=document.getElementById('apips'); if(!c)return; c.innerHTML='';
+    SC.forEach((_,i)=>{
+      const p=document.createElement('div'); p.className='wpip'+(i===cur?' on':'');
+      p.onclick=()=>{ clr(); cur=i; go(); }; c.appendChild(p);
+    });
+  }
+  function upPips(){ document.querySelectorAll('.wpip').forEach((p,i)=>p.classList.toggle('on',i===cur)); }
+
+  function setLbl(t){
+    const el=document.getElementById('asl'); if(!el)return;
+    el.style.opacity='0'; setTimeout(()=>{ el.textContent=t; el.style.opacity='1'; },240);
+  }
+
+  function startProg(dur){
+    const bar=document.getElementById('apb'); if(!bar)return;
+    bar.style.transition='none'; bar.style.width='0%';
+    t0=performance.now();
+    function f(now){ const p=Math.min((now-t0)/dur*100,100); bar.style.width=p+'%'; if(p<100) raf=requestAnimationFrame(f); }
+    raf=requestAnimationFrame(f);
+  }
+
+  function mkImg(src,emoji,alt){
+    const wrap=document.createElement('div');
+    const img=document.createElement('img');
+    img.src=src; img.alt=alt; img.className='sc-img';
+    img.onerror=()=>{
+      img.remove();
+      const fb=document.createElement('div'); fb.className='em-fb'; fb.textContent=emoji;
+      wrap.appendChild(fb);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>fb.classList.add('show')));
+    };
+    wrap.appendChild(img); return {wrap,img};
+  }
+
+  function mkTyping(){
+    const row=document.createElement('div'); row.className='mr'; row.id='aty';
+    row.innerHTML=`<div class="avt">🌱</div>
+      <div class="bub bub-b" style="display:flex;gap:5px;align-items:center;padding:11px 14px;">
+        <span class="wdot" id="wd1"></span><span class="wdot" id="wd2"></span><span class="wdot" id="wd3"></span>
+      </div>`;
+    return row;
+  }
+
+  function startD(){
+    let i=0;
+    di=setInterval(()=>{
+      ['wd1','wd2','wd3'].forEach((id,idx)=>{
+        const el=document.getElementById(id);
+        if(el) el.style.background=idx===i%3?'var(--green)':'rgba(255,255,255,0.2)';
+      }); i++;
+    },280);
+  }
+  function stopD(){ if(di){ clearInterval(di); di=null; } }
+
+  function mkBub(role,html){
+    const row=document.createElement('div'); row.className='mr';
+    row.style.justifyContent=role==='u'?'flex-end':'flex-start';
+    if(role==='b'){
+      row.innerHTML=`<div class="avt">🌱</div><div class="bub bub-b">${html}</div>`;
+    } else {
+      row.innerHTML=`<div class="bub bub-u">${html}</div>`;
+    }
+    return row;
+  }
+
+  function show(el){ requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show'))); }
+
+  function fadeOut(cb){
+    const cw=document.getElementById('acw'); if(!cw)return;
+    cw.style.opacity='0';
+    af(()=>{ cw.innerHTML=''; cw.style.opacity='1'; cb(); },FADE);
+  }
+
+  function go(){
+    const s=SC[cur];
+    const cw=document.getElementById('acw'); if(!cw)return;
+    cw.innerHTML=''; setLbl(s.label); upPips();
+
+    let dur=350;
+    s.msgs.forEach(m=>{ dur+=GAP; if(m.r==='b') dur+=TY+280; else dur+=200; });
+    dur+=PAUSE+FADE;
+    startProg(dur);
+
+    const {wrap,img}=mkImg(s.img,s.emoji,s.alt);
+    cw.appendChild(wrap);
+    af(()=>{ img.classList.add('show'); cw.scrollTop=cw.scrollHeight; },80);
+
+    let c=350;
+    s.msgs.forEach(msg=>{
+      c+=GAP;
+      if(msg.r==='u'){
+        af(()=>{ const b=mkBub('u',msg.t); cw.appendChild(b); show(b); cw.scrollTop=cw.scrollHeight; },c);
+        c+=200;
+      } else {
+        af(()=>{ const ty=mkTyping(); cw.appendChild(ty); show(ty); startD(); cw.scrollTop=cw.scrollHeight; },c);
+        c+=TY;
+        af(()=>{
+          stopD();
+          const ty=document.getElementById('aty');
+          if(ty){ ty.classList.remove('show'); setTimeout(()=>ty.remove(),300); }
+          setTimeout(()=>{ const b=mkBub('b',msg.t); cw.appendChild(b); show(b); cw.scrollTop=cw.scrollHeight; },280);
+        },c);
+        c+=280;
+      }
+    });
+
+    c+=PAUSE;
+    af(()=>{ fadeOut(()=>{ cur=(cur+1)%SC.length; go(); }); },c);
+  }
+
+  mkPips(); go();
+})();
+</script>
+
 <!-- Publications -->
 <section id="publications">
   <div class="section-label">03 / Publications</div>
@@ -512,7 +724,7 @@
 
 <!-- GitHub Repos -->
 <section id="github">
-  <div class="section-label">04 / GitHub</div>
+  <div class="section-label">05 / GitHub</div>
   <h2>Latest Repositories <span style="font-family:var(--mono);font-size:0.7rem;color:var(--green);font-weight:400;">· live from GitHub API</span></h2>
   <div id="repos-container">
     <div class="repos-loading"><span class="spinner"></span> Loading repositories from GitHub...</div>
@@ -524,7 +736,7 @@
 
 <!-- Skills -->
 <section id="skills">
-  <div class="section-label">05 / Skills</div>
+  <div class="section-label">06 / Skills</div>
   <h2>Technical Expertise</h2>
   <div class="skills-grid reveal">
     <div class="skill-group"><div class="skill-group-title">Deep Learning &amp; Vision</div><div class="skill-pills"><span class="skill-pill">PyTorch</span><span class="skill-pill">JAX</span><span class="skill-pill">CLIP</span><span class="skill-pill">ViT</span><span class="skill-pill">DINO</span><span class="skill-pill">SAM</span><span class="skill-pill">Deformable DETR</span><span class="skill-pill">OpenCLIP</span></div></div>
@@ -538,7 +750,7 @@
 
 <!-- Contact -->
 <section id="contact">
-  <div class="section-label">06 / Contact</div>
+  <div class="section-label">07 / Contact</div>
   <h2>Get In Touch</h2>
   <p class="contact-sub">Open to academic collaborations, postdoc opportunities, and industry roles in the UAE and GCC. Feel free to reach out.</p>
   <div class="contact-links">
