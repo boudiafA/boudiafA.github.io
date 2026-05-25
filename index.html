@@ -255,7 +255,7 @@
       <div class="hero-links">
         <a href="#projects" class="btn btn-primary">View Projects</a>
         <a href="boudiaf_cv.pdf" class="btn btn-outline" target="_blank">Download CV</a>
-        <a href="https://scholar.google.com/citations?user=YOUR_ID" class="btn btn-outline" target="_blank">Google Scholar</a>
+        <a href="https://scholar.google.com/citations?user=1FTxzmoAAAAJ&hl=en/citations?user=1FTxzmoAAAAJ&hl=en" class="btn btn-outline" target="_blank">Google Scholar</a>
       </div>
     </div>
 
@@ -283,7 +283,7 @@
           <a href="https://github.com/boudiafA" class="icon-link" target="_blank" title="GitHub">
             <svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
           </a>
-          <a href="https://scholar.google.com/citations?user=YOUR_ID" class="icon-link" target="_blank" title="Google Scholar">
+          <a href="https://scholar.google.com/citations?user=1FTxzmoAAAAJ&hl=en/citations?user=1FTxzmoAAAAJ&hl=en" class="icon-link" target="_blank" title="Google Scholar">
             <svg viewBox="0 0 24 24"><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 10a8 8 0 0 1 7.162 3.44L24 9.5z"/></svg>
           </a>
           <a href="https://www.linkedin.com/in/abderrahman-boudiaf-188555108/" class="icon-link" target="_blank" title="LinkedIn">
@@ -754,10 +754,10 @@
   <h2>Get In Touch</h2>
   <p class="contact-sub">Open to academic collaborations, postdoc opportunities, and industry roles in the UAE and GCC. Feel free to reach out.</p>
   <div class="contact-links">
-    <a href="mailto:100058322@ku.ac.ae" class="btn btn-primary">✉ Send Email</a>
+    <a href="mailto:boudiafabderrahmene@gmail.com" class="btn btn-primary">✉ Send Email</a>
     <a href="https://www.linkedin.com/in/abderrahman-boudiaf-188555108/" class="btn btn-outline" target="_blank">LinkedIn</a>
     <a href="https://github.com/boudiafA" class="btn btn-outline" target="_blank">GitHub</a>
-    <a href="https://scholar.google.com/citations?user=YOUR_ID" class="btn btn-outline" target="_blank">Google Scholar</a>
+    <a href="https://scholar.google.com/citations?user=1FTxzmoAAAAJ&hl=en/citations?user=1FTxzmoAAAAJ&hl=en" class="btn btn-outline" target="_blank">Google Scholar</a>
   </div>
 </section>
 
@@ -820,8 +820,9 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 
 // ── OpenAlex — live citations & h-index ──────────────────────
 async function loadOpenAlex() {
-  // Hardcoded fallback values (always shown first, replaced if API succeeds)
-  const FALLBACK = { citations: 55, hindex: 4, papers: 13 };
+  // Correct verified stats from Google Scholar (1FTxzmoAAAAJ)
+  // Shown immediately — OpenAlex used only for per-paper live counts
+  const KNOWN = { citations: 55, hindex: 4, papers: 13 };
 
   function setStats(c, h, p) {
     document.getElementById('stat-citations').textContent = c;
@@ -836,44 +837,42 @@ async function loadOpenAlex() {
       s.parentElement.textContent = '');
   }
 
-  // Show fallback immediately so stats never stay blank
-  setStats(FALLBACK.citations + '+', FALLBACK.hindex, FALLBACK.papers);
+  // Set correct values immediately — no spinner wait
+  setStats(KNOWN.citations, KNOWN.hindex, KNOWN.papers);
   clearSpinners();
 
   try {
-    // Search by name + institution country, pick result with KU affiliation
-    const res  = await fetch(
-      'https://api.openalex.org/authors?search=Abderrahmene+Boudiaf' +
-      '&filter=last_known_institutions.country_code:AE' +
+    // Use OpenAlex ONLY for per-paper citation counts
+    // Search by the underwater image paper DOI to find the exact author ID
+    const seedRes = await fetch(
+      'https://api.openalex.org/works?filter=doi:10.1007/978-3-031-06433-3_41' +
       '&mailto=boudiafa.github.io');
-    if (!res.ok) throw new Error('API error ' + res.status);
-    const data = await res.json();
+    if (!seedRes.ok) throw new Error('seed fetch failed');
+    const seedData = await seedRes.json();
+    const seedWork = seedData.results?.[0];
+    if (!seedWork) throw new Error('seed work not found');
 
-    // Find the right author — must have Khalifa in affiliation
-    let author = data.results?.find(a =>
-      a.last_known_institutions?.some(i =>
-        i.display_name?.toLowerCase().includes('khalifa')));
+    // Find Boudiaf in the authorship list
+    const authorship = seedWork.authorships?.find(a =>
+      a.author?.display_name?.toLowerCase().includes('boudiaf'));
+    if (!authorship) throw new Error('author not found in seed work');
 
-    // If not found by institution filter, take first result
-    if (!author && data.results?.length > 0) author = data.results[0];
-    if (!author) throw new Error('Author not found');
+    const authorId = authorship.author.id;
 
-    const citations = author.cited_by_count;
-    const hindex    = author.summary_stats?.h_index;
-    const papers    = author.works_count;
-
-    // Only update if numbers are plausible (sanity check)
-    if (citations >= 30 && hindex >= 3) {
-      setStats(citations, hindex, papers);
-    }
-
-    // Per-paper live citations
+    // Fetch all works by this exact author ID
     const worksRes = await fetch(
-      `https://api.openalex.org/works?filter=authorships.author.id:${author.id}` +
+      `https://api.openalex.org/works?filter=authorships.author.id:${authorId}` +
       `&per-page=50&mailto=boudiafa.github.io`);
-    if (!worksRes.ok) return;
+    if (!worksRes.ok) throw new Error('works fetch failed');
     const worksData = await worksRes.json();
 
+    // Update total stats from this verified author
+    const totalCites = worksData.results?.reduce((s, w) => s + (w.cited_by_count || 0), 0) || 0;
+    if (totalCites >= KNOWN.citations) {
+      setStats(totalCites, KNOWN.hindex, worksData.meta?.count || KNOWN.papers);
+    }
+
+    // Update per-paper citation counts
     worksData.results?.forEach(work => {
       const doi   = (work.doi || '').replace('https://doi.org/', '').toLowerCase();
       const count = work.cited_by_count ?? 0;
@@ -888,8 +887,8 @@ async function loadOpenAlex() {
     });
 
   } catch(err) {
-    console.warn('OpenAlex fetch failed:', err.message);
-    // Fallback already set above — nothing more to do
+    console.warn('OpenAlex per-paper fetch failed:', err.message);
+    // Known stats already set — no action needed
   }
 }
 
