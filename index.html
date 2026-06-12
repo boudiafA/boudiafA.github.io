@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abderrahmene Boudiaf — AI Researcher</title>
+  <meta name="description" content="PhD researcher in Computer Vision, Vision-Language Models, and AI for Agriculture at Khalifa University, Abu Dhabi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:        #0a0e17;
+      --bg2:       #0f1520;
+      --bg3:       #141c2e;
+      --border:    rgba(255,255,255,0.07);
+      --border-2:  rgba(255,255,255,0.12);
+      --green:     #2ecc71;
+      --green-dim: #1a7a43;
+      --blue:      #4a9eff;
+      --blue-dim:  #1a4a8a;
+      --navy:      #1A3A5C;
+      --text:      #e8edf5;
+      --text-dim:  #8493a8;
+      --text-muted:#566276;
+      --serif:     'DM Serif Display', Georgia, serif;
+      --sans:      'DM Sans', system-ui, sans-serif;
+      --mono:      'DM Mono', 'Courier New', monospace;
+      --radius:    12px;
+      --maxw:      1060px;
+      --nav-h:     64px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    ::selection { background: var(--green-dim); color: #fff; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--green-dim); border-radius: 3px; }
+    a { color: inherit; }
+
+    /* Top scroll progress bar */
+    #scroll-progress { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: linear-gradient(90deg, var(--green), var(--blue)); z-index: 200; transition: width 0.1s linear; }
+
+    /* Ambient canvas */
+    #bg-canvas { position: fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:0.3; }
+
+    /* ============ NAV ============ */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:100;
+      padding: 0 2rem; height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,14,23,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: var(--serif); font-size: 1.15rem; color: var(--text); text-decoration: none; letter-spacing: 0.01em; }
+    .nav-logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 1.75rem; list-style: none; align-items: center; }
+    .nav-links a { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; position: relative; padding: 0.25rem 0; }
+    .nav-links a .n { color: var(--text-muted); margin-right: 0.4rem; font-size: 0.68rem; }
+    .nav-links a:hover, .nav-links a.active { color: var(--green); }
+    .nav-links a.active .n { color: var(--green); }
+    .nav-toggle { display: none; background: none; border: 1px solid var(--border-2); border-radius: 8px; width: 38px; height: 38px; cursor: pointer; align-items: center; justify-content: center; }
+    .nav-toggle span { display: block; width: 16px; height: 2px; background: var(--text); position: relative; transition: 0.25s; }
+    .nav-toggle span::before, .nav-toggle span::after { content: ''; position: absolute; left: 0; width: 16px; height: 2px; background: var(--text); transition: 0.25s; }
+    .nav-toggle span::before { top: -5px; } .nav-toggle span::after { top: 5px; }
+    .nav-toggle.open span { background: transparent; }
+    .nav-toggle.open span::before { top: 0; transform: rotate(45deg); }
+    .nav-toggle.open span::after  { top: 0; transform: rotate(-45deg); }
+
+    /* ============ LAYOUT ============ */
+    main { position: relative; z-index: 1; }
+    .section { max-width: var(--maxw); margin: 0 auto; padding: 6.5rem 2rem; border-top: 1px solid var(--border); }
+
+    /* Unified chapter header — the device that gives every section the same rhythm */
+    .chapter { margin-bottom: 3rem; }
+    .eyebrow { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.1rem; }
+    .eyebrow .num { font-family: var(--mono); font-size: 0.72rem; color: var(--green); letter-spacing: 0.1em; }
+    .eyebrow .line { height: 1px; width: 38px; background: var(--green-dim); opacity: 0.6; }
+    .eyebrow .kicker { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.18em; text-transform: uppercase; }
+    .chapter h2 { font-family: var(--serif); font-size: clamp(1.9rem, 3.4vw, 2.6rem); font-weight: 400; color: var(--text); line-height: 1.15; }
+    .chapter .intro { font-size: 0.95rem; color: var(--text-dim); line-height: 1.8; max-width: 640px; margin-top: 1rem; }
+    .chapter .intro strong { color: var(--text); font-weight: 500; }
+
+    /* ============ HERO ============ */
+    #hero { min-height: 100vh; display: flex; align-items: center; padding-top: var(--nav-h); border-top: none; }
+    .hero-inner { max-width: var(--maxw); margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 330px; gap: 4rem; align-items: center; width: 100%; }
+    .hero-greeting { font-family: var(--mono); font-size: 0.8rem; color: var(--green); letter-spacing: 0.06em; margin-bottom: 1.25rem; opacity:0; animation: fadeUp 0.6s ease 0.2s forwards; }
+    .hero-name { font-family: var(--serif); font-size: clamp(2.7rem, 5.2vw, 4rem); line-height: 1.04; color: var(--text); margin-bottom: 0.9rem; opacity:0; animation: fadeUp 0.6s ease 0.4s forwards; }
+    .hero-title { font-family: var(--mono); font-size: 0.82rem; color: var(--text-dim); letter-spacing: 0.04em; margin-bottom: 1.5rem; opacity:0; animation: fadeUp 0.6s ease 0.5s forwards; }
+    .hero-title b { color: var(--green); font-weight: 500; }
+    .hero-bio { font-size: 0.96rem; color: var(--text-dim); line-height: 1.85; max-width: 540px; margin-bottom: 2rem; opacity:0; animation: fadeUp 0.6s ease 0.6s forwards; }
+    .hero-bio strong { color: var(--text); font-weight: 500; }
+    .hero-links { display: flex; gap: 0.85rem; flex-wrap: wrap; opacity:0; animation: fadeUp 0.6s ease 0.8s forwards; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.4rem; border-radius: 10px; font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; font-family: var(--sans); }
+    .btn-primary { background: var(--green); color: #06120a; }
+    .btn-primary:hover { background: #27ae60; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(46,204,113,0.28); }
+    .btn-outline { border: 1px solid var(--border-2); color: var(--text-dim); background: var(--bg2); }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); }
+
+    /* Profile card */
+    .hero-card { opacity:0; animation: fadeUp 0.6s ease 0.9s forwards; }
+    .profile-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 18px; padding: 1.85rem; text-align: center; position: relative; overflow: hidden; }
+    .profile-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, var(--green), var(--blue)); }
+    .profile-avatar { width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 1rem; border: 3px solid var(--border-2); overflow: hidden; background: linear-gradient(135deg, var(--green-dim), var(--blue-dim)); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:1.4rem; color:#fff; }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .profile-name { font-family: var(--serif); font-size: 1.05rem; margin-bottom: 0.2rem; }
+    .profile-sub { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1.25rem; }
+    .live-badge { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--mono); font-size: 0.6rem; color: var(--green); margin-bottom: 1rem; letter-spacing: 0.04em; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-dot 2s ease infinite; }
+    .profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1.35rem; }
+    .stat { background: var(--bg3); border-radius: 9px; padding: 0.7rem 0.3rem; border: 1px solid var(--border); }
+    .stat-num { font-family: var(--mono); font-size: 1.15rem; color: var(--green); font-weight: 500; display: block; }
+    .stat-num.loading { color: var(--text-muted); font-size: 0.8rem; }
+    .stat-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+    .profile-links { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; }
+    .icon-link { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--text-dim); transition: all 0.2s; }
+    .icon-link:hover { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.08); transform: translateY(-2px); }
+    .icon-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+    /* ============ ABOUT ============ */
+    .about-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; align-items: start; }
+    .about-text p { font-size: 0.95rem; color: var(--text-dim); line-height: 1.9; margin-bottom: 1.1rem; }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-text strong { color: var(--text); font-weight: 500; }
+    .about-side { display: flex; flex-direction: column; gap: 1.25rem; }
+    .side-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.4rem; }
+    .side-card h4 { font-family: var(--mono); font-size: 0.65rem; color: var(--green); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.9rem; }
+    .interest-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .pill { font-size: 0.72rem; padding: 0.28rem 0.65rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 100px; color: var(--text-dim); }
+    .facts { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .facts li { display: flex; flex-direction: column; gap: 0.1rem; }
+    .facts .f-label { font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .facts .f-value { font-size: 0.82rem; color: var(--text); }
+
+    /* ============ RESEARCH / PROJECTS ============ */
+    .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .project-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.85rem; transition: border-color 0.25s, transform 0.25s; }
+    .project-card:hover { transform: translateY(-3px); border-color: var(--border-2); }
+    .project-card.featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 2.25rem; align-items: center; }
+    .project-card.featured:hover { border-color: rgba(46,204,113,0.35); }
+    .project-badge { font-family: var(--mono); font-size: 0.62rem; padding: 0.22rem 0.6rem; border-radius: 100px; margin-bottom: 0.85rem; display: inline-block; letter-spacing: 0.08em; text-transform: uppercase; }
+    .badge-green { background: rgba(46,204,113,0.1); color: var(--green); border: 1px solid var(--green-dim); }
+    .badge-blue  { background: rgba(74,158,255,0.1); color: var(--blue);  border: 1px solid var(--blue-dim); }
+    .badge-gray  { background: var(--bg3); color: var(--text-dim); border: 1px solid var(--border); }
+    .project-title { font-family: var(--serif); font-size: 1.3rem; color: var(--text); margin-bottom: 0.55rem; }
+    .project-desc { font-size: 0.86rem; color: var(--text-dim); line-height: 1.75; margin-bottom: 1.1rem; }
+    .project-metrics { display: flex; gap: 1.25rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+    .metric { font-family: var(--mono); font-size: 0.78rem; color: var(--green); }
+    .metric span { color: var(--text-dim); }
+    .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+    .ptag { font-family: var(--mono); font-size: 0.62rem; padding: 0.2rem 0.5rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); }
+    .project-links { display: flex; gap: 1rem; }
+    .plink { font-size: 0.8rem; color: var(--text-dim); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; transition: color 0.2s; }
+    .plink:hover { color: var(--green); }
+    .term-block { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; font-family: var(--mono); font-size: 0.73rem; line-height: 1.85; color: var(--text-dim); }
+    .term-bar { display: flex; gap: 5px; margin-bottom: 0.85rem; }
+    .term-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .term-dot.r { background: #ff5f57; } .term-dot.y { background: #febc2e; } .term-dot.g { background: #28c840; }
+    .term-line .cmd { color: var(--green); } .term-line .num { color: var(--blue); } .term-line .str { color: #e8b96a; }
+    .term-cursor { display: inline-block; width: 7px; height: 13px; background: var(--green); vertical-align: middle; animation: blink 1s step-end infinite; }
+
+    /* ============ DEMO ============ */
+    .demo-wrap { max-width: 540px; margin: 0 auto; }
+
+    /* ============ PUBLICATIONS ============ */
+    .pub-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .filter-btn { font-family: var(--mono); font-size: 0.7rem; padding: 0.36rem 0.9rem; border-radius: 100px; border: 1px solid var(--border); background: var(--bg2); color: var(--text-dim); cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em; }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.06); }
+    .pub-list { display: flex; flex-direction: column; }
+    .pub-item { padding: 1.25rem 0.75rem; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 52px 1fr auto; gap: 1.25rem; align-items: start; transition: background 0.2s; border-radius: 6px; }
+    .pub-item:hover { background: rgba(255,255,255,0.02); }
+    .pub-year { font-family: var(--mono); font-size: 0.72rem; color: var(--green); padding-top: 2px; }
+    .pub-title { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 0.3rem; line-height: 1.45; }
+    .pub-authors { font-size: 0.77rem; color: var(--text-dim); margin-bottom: 0.25rem; }
+    .pub-authors strong { color: var(--green); font-weight: 600; }
+    .pub-venue { font-size: 0.76rem; color: var(--text-muted); font-style: italic; }
+    .pub-right { text-align: right; }
+    .pub-citations { font-family: var(--mono); font-size: 0.68rem; color: var(--green); white-space: nowrap; }
+    .pub-citations.live { font-size: 0.65rem; }
+    .pub-link { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; display: block; transition: color 0.2s; margin-top: 0.3rem; }
+    .pub-link:hover { color: var(--green); }
+
+    /* ============ BACKGROUND (Experience / Education / Teaching) ============ */
+    .bg-block { margin-bottom: 2.75rem; }
+    .bg-block:last-child { margin-bottom: 0; }
+    .bg-block-title { font-family: var(--mono); font-size: 0.68rem; color: var(--green); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 1.5rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+    .tl { display: flex; flex-direction: column; gap: 1.6rem; padding-left: 1.25rem; border-left: 1px solid var(--border-2); }
+    .tl-item { position: relative; }
+    .tl-item::before { content: ''; position: absolute; left: calc(-1.25rem - 5px); top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px var(--bg); }
+    .tl-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.25rem; }
+    .tl-role { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    .tl-when { font-family: var(--mono); font-size: 0.68rem; color: var(--text-muted); white-space: nowrap; }
+    .tl-org { font-size: 0.82rem; color: var(--blue); margin-bottom: 0.5rem; }
+    .tl-note { font-size: 0.82rem; color: var(--text-dim); font-style: italic; margin-bottom: 0.4rem; }
+    .tl-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.4rem; }
+    .tl-list li { font-size: 0.83rem; color: var(--text-dim); line-height: 1.65; padding-left: 1rem; position: relative; }
+    .tl-list li::before { content: '▸'; position: absolute; left: 0; color: var(--green-dim); font-size: 0.7rem; top: 2px; }
+    .tl-list li strong { color: var(--text); font-weight: 500; }
+
+    /* ============ SKILLS ============ */
+    .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .skill-group { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; transition: border-color 0.2s; }
+    .skill-group:hover { border-color: var(--border-2); }
+    .skill-group-title { font-family: var(--mono); font-size: 0.66rem; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.95rem; }
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .skill-pill { font-size: 0.74rem; padding: 0.24rem 0.6rem; background: var(--bg3); border-radius: 6px; color: var(--text-dim); border: 1px solid var(--border); }
+
+    /* ============ CONTACT ============ */
+    #contact { text-align: center; }
+    #contact .chapter { margin-bottom: 1.5rem; }
+    .contact-sub { font-size: 0.96rem; color: var(--text-dim); line-height: 1.8; max-width: 520px; margin: 0 auto 2.25rem; }
+    .contact-links { display: flex; justify-content: center; gap: 0.85rem; flex-wrap: wrap; }
+
+    /* ============ FOOTER ============ */
+    footer { position: relative; z-index: 1; text-align: center; padding: 2.25rem; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 0.68rem; color: var(--text-muted); line-height: 1.9; }
+    footer a { color: var(--green); text-decoration: none; }
+
+    /* ============ ANIMATIONS ============ */
+    @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+    @keyframes blink  { 0%,100% { opacity:1; } 50% { opacity:0; } }
+    @keyframes pulse-dot { 0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(46,204,113,0.4); } 50% { opacity:0.7; box-shadow: 0 0 0 4px rgba(46,204,113,0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .reveal { opacity:0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity:1; transform: translateY(0); }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 880px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hero-card  { max-width: 360px; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .project-card.featured { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .section { padding: 4.5rem 1.25rem; }
+      .hero-inner { padding: 0 1.25rem; }
+      .nav-links { position: fixed; top: var(--nav-h); left: 0; right: 0; flex-direction: column; align-items: flex-start; gap: 0; background: rgba(10,14,23,0.97); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0.5rem 1.25rem 1rem; transform: translateY(-130%); transition: transform 0.3s ease; }
+      .nav-links.open { transform: translateY(0); }
+      .nav-links li { width: 100%; }
+      .nav-links a { display: block; padding: 0.7rem 0; width: 100%; border-bottom: 1px solid var(--border); font-size: 0.78rem; }
+      .nav-toggle { display: flex; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .pub-item { grid-template-columns: 44px 1fr; }
+      .pub-right { grid-column: 1 / -1; text-align: left; padding-left: 44px; }
+      .term-block { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+      .reveal { opacity: 1; transform: none; }
+      .hero-greeting, .hero-name, .hero-title, .hero-bio, .hero-links, .hero-card { opacity: 1 !important; animation: none !important; }
+      #bg-canvas { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <a href="#hero" class="nav-logo">A<span>.</span>Boudiaf</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about"><span class="n">01</span>About</a></li>
+    <li><a href="#research"><span class="n">02</span>Research</a></li>
+    <li><a href="#demo"><span class="n">03</span>Demo</a></li>
+    <li><a href="#publications"><span class="n">04</span>Publications</a></li>
+    <li><a href="#background"><span class="n">05</span>Background</a></li>
+    <li><a href="#skills"><span class="n">06</span>Skills</a></li>
+    <li><a href="#contact"><span class="n">07</span>Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="hero-greeting">PhD Candidate · Khalifa University, Abu Dhabi</p>
+      <h1 class="hero-name">Abderrahmene<br>Boudiaf</h1>
+      <p class="hero-title"><b>Computer Vision</b> · <b>Foundation Models</b> · <b>AI for Agriculture</b></p>
+      <p class="hero-bio">I build AI systems that see, understand, and reason about the visual world. My research spans <strong>vision–language models</strong>, <strong>multimodal LLMs</strong>, and <strong>semantic segmentation</strong> — with a focus on making foundation models work in precision agriculture and real-world deployment.</p>
+      <div class="hero-links">
+        <a href="#research" class="btn btn-primary">View Research</a>
+        <a href="https://scholar.google.com/citations?user=1FTxzmoAAAAJ&hl=en" class="btn btn-outline" target="_blank">Google Scholar</a>
+        <a href="mailto:boudiafabderrahmene@gmail.com" class="btn btn-outline">Email</a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="profile-card">
+        <div class="profile-avatar"><img src="assets/pic.jpg" alt="Abderrahmene Boudiaf" onerror="this.style.display='none';this.parentElement.innerHTML='AB'"></div>
+        <div class="profile-name">Abderrahmene Boudiaf</div>
+        <div class="profile-sub">Khalifa University · Abu Dhabi, UAE</div>
+        <div class="live-badge"><span class="live-dot"></span> Live data · OpenAlex</div>
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="stat-num loading" id="stat-citations"><span class="spinner"></span></span>
+            <span class="stat-label">Citations</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num loading" id="stat-hindex"><span class="spinner"></span></span>
+            <span class="stat-label">h-index</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num loading" id="stat-papers"><span class="spinner"></span></span>
+            <span class="stat-label">Papers</span>
+          </div>
+        </div>
+        <div class="profile-links">
+          <a href="https://github.com/boudiafA" class="icon-link" target="_blank" title="GitHub" aria-label="GitHub">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+          <a href="https://scholar.google.com/citations?user=1FTxzmoAAAAJ&hl=en" class="icon-link" target="_blank" title="Google Scholar" aria-label="Google Scholar">
+            <svg viewBox="0 0 24 24"><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 10a8 8 0 0 1 7.162 3.44L24 9.5z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/abderrahman-boudiaf-188555108/" class="icon-link" target="_blank" title="LinkedIn" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://arxiv.org/a/boudiaf_a_1" class="icon-link" target="_blank" title="arXiv" aria-label="arXiv">
+            <svg viewBox="0 0 24 24"><path d="M8.3 0L0 12l8.3 12h2.25L2.25 12 10.55 0zm5.2 0L5.19 12l8.3 12h2.24L7.44 12 15.74 0zm6.02 0l-8.3 12 8.3 12h2.24L13.46 12 21.76 0z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 / ABOUT ============ -->
+<section id="about" class="section">
+  <div class="chapter reveal">
+    <div class="eyebrow"><span class="num">01</span><span class="line"></span><span class="kicker">About</span></div>
+    <h2>Research summary</h2>
+    <p class="intro">Designing foundation-model pipelines that translate state-of-the-art AI into scalable, trustworthy tools for sustainable food production.</p>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>I'm a PhD candidate in the Department of Electrical Engineering and Computer Science at <strong>Khalifa University of Science and Technology</strong> (Abu Dhabi, UAE), working in the <strong>Visual Recognition Group</strong> under Dr. Sajid Javed.</p>
+      <p>I started out building autonomous robots — teaching machines to navigate through fog, dust, and rocky terrain using only camera input. That early work gave me a deep appreciation for how hard it is to make vision systems robust in the real world.</p>
+      <p>My PhD then pivoted toward <strong>foundation models</strong>. As transformers and LLMs reshaped the field, I focused on one question: can we make these powerful models genuinely useful in domains where data is scarce, labels are expensive, and mistakes carry real consequences?</p>
+      <p>That question led me to <strong>agriculture</strong> — one of the most data-constrained, high-stakes domains imaginable. I built <strong>CropVLM</strong>, a vision–language model that recognises 37 crop species without retraining, and <strong>AgriChat</strong>, a multimodal assistant that diagnoses plant disease from a single field image. Both are open-source.</p>
+    </div>
+    <div class="about-side">
+      <div class="side-card">
+        <h4>Research Interests</h4>
+        <div class="interest-pills">
+          <span class="pill">Vision–Language Models</span>
+          <span class="pill">Foundation Models</span>
+          <span class="pill">Semantic Segmentation</span>
+          <span class="pill">Few-Shot Learning</span>
+          <span class="pill">Multimodal LLMs</span>
+          <span class="pill">AI for Agriculture</span>
+          <span class="pill">Open-Vocabulary Recognition</span>
+          <span class="pill">Retrieval-Augmented Generation</span>
+          <span class="pill">Underwater Vision</span>
+        </div>
+      </div>
+      <div class="side-card">
+        <h4>At a glance</h4>
+        <ul class="facts">
+          <li><span class="f-label">Position</span><span class="f-value">PhD Candidate · Expected Dec 2026</span></li>
+          <li><span class="f-label">Group</span><span class="f-value">Visual Recognition Group</span></li>
+          <li><span class="f-label">Advisor</span><span class="f-value">Dr. Sajid Javed</span></li>
+          <li><span class="f-label">Location</span><span class="f-value">Abu Dhabi, UAE</span></li>
+          <li><span class="f-label">Languages</span><span class="f-value">Arabic (native), English (fluent)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 / RESEARCH ============ -->
+<section id="research" class="section">
+  <div class="chapter reveal">
+    <div class="eyebrow"><span class="num">02</span><span class="line"></span><span class="kicker">Research</span></div>
+    <h2>Selected projects</h2>
+    <p class="intro">Foundation-model systems for agricultural vision — most are open-source with code and papers linked below.</p>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card featured reveal">
+      <div>
+        <div class="project-badge badge-green">★ Featured · 2026</div>
+        <h3 class="project-title">CropVLM</h3>
+        <p class="project-desc">A vision–language model adapted to agriculture via Domain-Specific Semantic Alignment, trained on 52,987 curated image–caption pairs across 37 crop species. HOS-Net enables zero-shot crop detection from text descriptions alone — no retraining required.</p>
+        <div class="project-metrics">
+          <div class="metric">72.51% <span>zero-shot acc.</span></div>
+          <div class="metric">49.17 AP₅₀ <span>novel species</span></div>
+          <div class="metric">37 <span>crop species</span></div>
+        </div>
+        <div class="project-tags"><span class="ptag">VLM</span><span class="ptag">CLIP</span><span class="ptag">Zero-Shot</span><span class="ptag">Open-Vocabulary</span></div>
+        <div class="project-links">
+          <a href="https://github.com/boudiafA/CropVLM" class="plink" target="_blank">⬡ GitHub</a>
+          <a href="https://arxiv.org/abs/2605.03259" class="plink" target="_blank">↗ arXiv</a>
+        </div>
+      </div>
+      <div class="term-block">
+        <div class="term-bar"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div></div>
+        <div class="term-line"><span class="cmd">$</span> python cropvlm_infer.py</div>
+        <div class="term-line">Loading CropVLM weights...</div>
+        <div class="term-line">Model ready. 37 species.</div><br>
+        <div class="term-line"><span class="cmd">Query:</span> <span class="str">"diseased mango leaf"</span></div>
+        <div class="term-line">Running HOS-Net...</div><br>
+        <div class="term-line">→ Class: <span class="str">Mangifera indica</span></div>
+        <div class="term-line">→ Conf:  <span class="num">0.9471</span></div>
+        <div class="term-line">→ AP₅₀: <span class="num">49.17</span></div><br>
+        <div class="term-line"><span class="cmd">$</span> <span class="term-cursor"></span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-badge badge-green">2026</div>
+      <h3 class="project-title">AgriChat</h3>
+      <p class="project-desc">Multimodal LLM fine-tuned with LoRA on AgriMM — 121k+ images, 607k+ QA pairs, 3,000+ plant classes. The V2VK pipeline eliminates biological hallucinations via verified phytopathological grounding.</p>
+      <div class="project-metrics"><div class="metric">121k+ <span>images</span></div><div class="metric">3,000+ <span>classes</span></div></div>
+      <div class="project-tags"><span class="ptag">MLLM</span><span class="ptag">LoRA</span><span class="ptag">VQA</span></div>
+      <div class="project-links"><a href="https://github.com/boudiafA/AgriChat" class="plink" target="_blank">⬡ GitHub</a><a href="https://arxiv.org/abs/2603.16934" class="plink" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-badge badge-blue">2026</div>
+      <h3 class="project-title">SegRAG</h3>
+      <p class="project-desc">Training-free retrieval-augmented semantic segmentation. Augments open-vocabulary VLMs with RAG for pixel-level understanding of arbitrary categories — no retraining needed.</p>
+      <div class="project-tags"><span class="ptag">RAG</span><span class="ptag">Segmentation</span><span class="ptag">Zero-Shot</span><span class="ptag">VLM</span></div>
+      <div class="project-links"><a href="https://arxiv.org/abs/2605.17630" class="plink" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-badge badge-gray">2022 · 29 citations</div>
+      <h3 class="project-title">Underwater Image Enhancement</h3>
+      <p class="project-desc">Pre-trained denoising transformers applied to underwater image restoration, reaching state-of-the-art quality without domain-specific retraining. Published at ICIAP 2022, Springer LNCS — my most-cited work.</p>
+      <div class="project-tags"><span class="ptag">Transformer</span><span class="ptag">Image Restoration</span><span class="ptag">Underwater</span></div>
+      <div class="project-links"><a href="https://link.springer.com/chapter/10.1007/978-3-031-06433-3_41" class="plink" target="_blank">↗ Springer</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 / DEMO ============ -->
+<section id="demo" class="section">
+  <div class="chapter reveal">
+    <div class="eyebrow"><span class="num">03</span><span class="line"></span><span class="kicker">Live Demo</span></div>
+    <h2>AgriChat in action</h2>
+    <p class="intro">A multimodal agricultural assistant that diagnoses plant species, detects disease, and assesses fruit ripeness from a single field image — powered by a LoRA fine-tuned foundation model trained on 121k+ agricultural images.</p>
+  </div>
+
+  <div class="demo-wrap">
+    <style>
+      #aw * { box-sizing: border-box; }
+      .mr  { display:flex; align-items:flex-end; gap:8px; opacity:0; transform:translateY(10px); transition:opacity 0.45s cubic-bezier(.4,0,.2,1), transform 0.45s cubic-bezier(.4,0,.2,1); }
+      .mr.show { opacity:1; transform:translateY(0); }
+      .bub   { max-width:82%; padding:9px 13px; font-size:0.84rem; line-height:1.65; border:1px solid rgba(255,255,255,0.07); }
+      .bub-b { border-radius:4px 14px 14px 14px; background:var(--bg2); color:var(--text); }
+      .bub-u { border-radius:14px 4px 14px 14px; background:rgba(46,158,255,0.15); color:#a8d4ff; }
+      .avt   { width:28px; height:28px; border-radius:50%; background:rgba(46,204,113,0.15); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; }
+      .wdot  { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.2); display:inline-block; transition:background 0.2s; }
+      .wpip  { width:7px; height:7px; border-radius:50%; border:1px solid rgba(255,255,255,0.2); background:transparent; transition:background 0.35s,border-color 0.35s; cursor:pointer; }
+      .wpip.on { background:var(--green); border-color:var(--green); }
+      #acw   { padding:14px 16px; display:flex; flex-direction:column; gap:10px; min-height:300px; overflow:hidden; transition:opacity 0.45s cubic-bezier(.4,0,.2,1); }
+      #apb   { height:2px; background:var(--green); width:0%; border-radius:0 2px 2px 0; }
+      #asl   { font-size:0.68rem; font-weight:500; padding:3px 10px; border-radius:100px; background:rgba(46,204,113,0.1); color:var(--green); border:1px solid rgba(46,204,113,0.25); transition:opacity 0.3s; font-family:var(--mono); }
+      .sc-img { width:100%; max-height:220px; object-fit:contain; background:var(--bg3); border-radius:10px; border:1px solid rgba(255,255,255,0.07); opacity:0; transform:scale(0.96); transition:opacity 0.5s cubic-bezier(.4,0,.2,1),transform 0.5s cubic-bezier(.4,0,.2,1); display:block; }
+      .sc-img.show { opacity:1; transform:scale(1); }
+      .em-fb  { text-align:center; padding:20px; border-radius:10px; border:1px solid rgba(255,255,255,0.07); background:var(--bg2); font-size:52px; opacity:0; transform:scale(0.94); transition:opacity 0.5s cubic-bezier(.4,0,.2,1),transform 0.5s cubic-bezier(.4,0,.2,1); }
+      .em-fb.show { opacity:1; transform:scale(1); }
+    </style>
+
+    <div id="aw">
+      <div style="background:var(--bg2);border-radius:16px;border:1px solid var(--border);overflow:hidden;">
+        <div style="height:2px;background:rgba(255,255,255,0.05);"><div id="apb"></div></div>
+        <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;">
+          <div class="avt">🌱</div>
+          <div>
+            <div style="font-size:0.84rem;font-weight:500;color:var(--text);">AgriChat</div>
+            <div style="font-size:0.7rem;color:var(--text-dim);display:flex;align-items:center;gap:4px;">
+              <span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;"></span>
+              Agricultural AI Assistant
+            </div>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+            <span id="asl">Plant Species ID</span>
+            <div style="display:flex;gap:5px;align-items:center;" id="apips"></div>
+          </div>
+        </div>
+        <div id="acw"></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:1.5rem;display:flex;gap:0.85rem;justify-content:center;flex-wrap:wrap;">
+      <a href="https://github.com/boudiafA/AgriChat" class="btn btn-outline" target="_blank">⬡ GitHub</a>
+      <a href="https://arxiv.org/abs/2603.16934" class="btn btn-outline" target="_blank">↗ arXiv Paper</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const SC=[
+    { label:"Plant Species ID", img:"assets/ChatBot_1.png", emoji:"🌿", alt:"Globe artichoke plant",
+      msgs:[
+        {r:"u",t:"Based on the plant's visible features and its surrounding environment, identify the most likely plant species."},
+        {r:"b",t:"The plant is <strong>Cynara scolymus</strong>, commonly known as the globe artichoke, a cultivated variety of <em>Cynara cardunculus</em>."},
+        {r:"u",t:"What is its native range?"},
+        {r:"b",t:"Its native range is the <strong>Mediterranean region</strong>."},
+      ]
+    },
+    { label:"Disease Detection", img:"assets/ChatBot_2.png", emoji:"🍌", alt:"Banana leaf with disease",
+      msgs:[
+        {r:"u",t:"Given this image of a banana leaf, determine whether the plant appears healthy or unhealthy."},
+        {r:"b",t:"The plant appears <strong>unhealthy</strong> — numerous brown spots with yellow halos indicate infection by <strong>Sigatoka disease</strong> caused by <strong><em>Mycosphaerella fijiensis</em></strong> (anamorph <em>Paracercospora fijiensis</em>)."},
+      ]
+    },
+    { label:"Fruit Ripeness", img:"assets/ChatBot_3.png", emoji:"🥭", alt:"Mango tree with fruits",
+      msgs:[
+        {r:"u",t:"Analyze the visible mangos and estimate the total number in the image and the ripeness level of each mango."},
+        {r:"b",t:"The image shows a <strong>tree with nine mangos</strong>, likely <strong>ripe or nearly ripe</strong> — colors range from <strong>green to orange-yellow</strong>, indicating varying maturity stages."},
+      ]
+    }
+  ];
+
+  const TY=850,GAP=480,PAUSE=3000,FADE=480;
+  let cur=0,tms=[],raf=null,di=null,t0=null;
+
+  function clr(){ tms.forEach(clearTimeout); tms=[]; cancelAnimationFrame(raf); raf=null; stopD(); }
+  function af(fn,d){ tms.push(setTimeout(fn,d)); }
+
+  function mkPips(){
+    const c=document.getElementById('apips'); if(!c)return; c.innerHTML='';
+    SC.forEach((_,i)=>{
+      const p=document.createElement('div'); p.className='wpip'+(i===cur?' on':'');
+      p.onclick=()=>{ clr(); cur=i; go(); }; c.appendChild(p);
+    });
+  }
+  function upPips(){ document.querySelectorAll('.wpip').forEach((p,i)=>p.classList.toggle('on',i===cur)); }
+
+  function setLbl(t){
+    const el=document.getElementById('asl'); if(!el)return;
+    el.style.opacity='0'; setTimeout(()=>{ el.textContent=t; el.style.opacity='1'; },240);
+  }
+
+  function startProg(dur){
+    const bar=document.getElementById('apb'); if(!bar)return;
+    bar.style.transition='none'; bar.style.width='0%';
+    t0=performance.now();
+    function f(now){ const p=Math.min((now-t0)/dur*100,100); bar.style.width=p+'%'; if(p<100) raf=requestAnimationFrame(f); }
+    raf=requestAnimationFrame(f);
+  }
+
+  function mkImg(src,emoji,alt){
+    const wrap=document.createElement('div');
+    const img=document.createElement('img'); img.className='sc-img'; img.src=src; img.alt=alt;
+    img.onerror=()=>{ const fb=document.createElement('div'); fb.className='em-fb'; fb.textContent=emoji; wrap.replaceChild(fb,img); setTimeout(()=>fb.classList.add('show'),40); };
+    wrap.appendChild(img);
+    return {wrap,img};
+  }
+  function mkBub(role,html){
+    const row=document.createElement('div'); row.className='mr';
+    row.style.justifyContent = role==='u' ? 'flex-end' : 'flex-start';
+    if(role==='b'){ const a=document.createElement('div'); a.className='avt'; a.textContent='🌱'; row.appendChild(a); }
+    const b=document.createElement('div'); b.className='bub '+(role==='u'?'bub-u':'bub-b'); b.innerHTML=html; row.appendChild(b);
+    return row;
+  }
+  function mkTyping(){
+    const row=document.createElement('div'); row.className='mr'; row.id='aty';
+    const a=document.createElement('div'); a.className='avt'; a.textContent='🌱'; row.appendChild(a);
+    const b=document.createElement('div'); b.className='bub bub-b'; b.style.display='flex'; b.style.gap='4px';
+    b.innerHTML='<span class="wdot"></span><span class="wdot"></span><span class="wdot"></span>'; row.appendChild(b);
+    return row;
+  }
+  function show(el){ requestAnimationFrame(()=>el.classList.add('show')); }
+  let dt=0;
+  function startD(){ const dots=document.querySelectorAll('#aty .wdot'); if(!dots.length)return; dt=0;
+    di=setInterval(()=>{ dots.forEach((d,i)=>d.style.background=i===dt%3?'rgba(46,204,113,0.8)':'rgba(255,255,255,0.2)'); dt++; },300); }
+  function stopD(){ if(di){ clearInterval(di); di=null; } }
+
+  function fadeOut(cb){
+    const cw=document.getElementById('acw'); if(!cw){cb&&cb();return;}
+    cw.style.opacity='0'; setTimeout(()=>{ cw.innerHTML=''; cw.style.opacity='1'; cb&&cb(); },FADE);
+  }
+
+  function go(){
+    const cw=document.getElementById('acw'); if(!cw)return;
+    cw.innerHTML=''; upPips();
+    const s=SC[cur]; setLbl(s.label);
+
+    let dur=350; s.msgs.forEach(m=>{ dur += GAP + (m.r==='u'?200:TY+280); });
+    dur+=PAUSE+FADE;
+    startProg(dur);
+
+    const {wrap,img}=mkImg(s.img,s.emoji,s.alt);
+    cw.appendChild(wrap);
+    af(()=>{ img.classList.add('show'); cw.scrollTop=cw.scrollHeight; },80);
+
+    let c=350;
+    s.msgs.forEach(msg=>{
+      c+=GAP;
+      if(msg.r==='u'){
+        af(()=>{ const b=mkBub('u',msg.t); cw.appendChild(b); show(b); cw.scrollTop=cw.scrollHeight; },c);
+        c+=200;
+      } else {
+        af(()=>{ const ty=mkTyping(); cw.appendChild(ty); show(ty); startD(); cw.scrollTop=cw.scrollHeight; },c);
+        c+=TY;
+        af(()=>{
+          stopD();
+          const ty=document.getElementById('aty');
+          if(ty){ ty.classList.remove('show'); setTimeout(()=>ty.remove(),300); }
+          setTimeout(()=>{ const b=mkBub('b',msg.t); cw.appendChild(b); show(b); cw.scrollTop=cw.scrollHeight; },280);
+        },c);
+        c+=280;
+      }
+    });
+
+    c+=PAUSE;
+    af(()=>{ fadeOut(()=>{ cur=(cur+1)%SC.length; go(); }); },c);
+  }
+
+  mkPips(); go();
+})();
+</script>
+
+<!-- ============ 04 / PUBLICATIONS ============ -->
+<section id="publications" class="section">
+  <div class="chapter reveal">
+    <div class="eyebrow"><span class="num">04</span><span class="line"></span><span class="kicker">Publications</span></div>
+    <h2>Publications</h2>
+    <p class="intro">Peer-reviewed papers and preprints across agriculture, vision–language, robotics, and biomedical signal analysis. Citation counts update live from OpenAlex.</p>
+  </div>
+  <div class="pub-filters">
+    <button class="filter-btn active" data-filter="all">All (13)</button>
+    <button class="filter-btn" data-filter="agriculture">Agriculture</button>
+    <button class="filter-btn" data-filter="vision">Vision &amp; LLM</button>
+    <button class="filter-btn" data-filter="robotics">Robotics</button>
+    <button class="filter-btn" data-filter="preprint">Preprints</button>
+  </div>
+  <div class="pub-list reveal">
+    <div class="pub-item" data-cat="agriculture preprint" data-doi="10.48550/arXiv.2605.03259">
+      <div class="pub-year">2026</div>
+      <div class="pub-body">
+        <div class="pub-title">CropVLM: A Domain-Adapted Vision-Language Model for Open-Set Crop Analysis</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, S. Javed</div>
+        <div class="pub-venue">arXiv:2605.03259</div>
+      </div>
+      <div class="pub-right"><a href="https://arxiv.org/abs/2605.03259" class="pub-link" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="pub-item" data-cat="agriculture preprint" data-doi="10.48550/arXiv.2603.16934">
+      <div class="pub-year">2026</div>
+      <div class="pub-body">
+        <div class="pub-title">AgriChat: A Multimodal Large Language Model for Agriculture Image Understanding</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, I. Hussain, S. Javed</div>
+        <div class="pub-venue">arXiv:2603.16934</div>
+      </div>
+      <div class="pub-right"><a href="https://arxiv.org/abs/2603.16934" class="pub-link" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="pub-item" data-cat="vision preprint" data-doi="10.48550/arXiv.2605.17630">
+      <div class="pub-year">2026</div>
+      <div class="pub-body">
+        <div class="pub-title">SegRAG: Training-Free Retrieval-Augmented Semantic Segmentation</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, I. Hussain, S. Javed</div>
+        <div class="pub-venue">arXiv:2605.17630</div>
+      </div>
+      <div class="pub-right"><a href="https://arxiv.org/abs/2605.17630" class="pub-link" target="_blank">↗ arXiv</a></div>
+    </div>
+    <div class="pub-item" data-cat="vision preprint">
+      <div class="pub-year">2026</div>
+      <div class="pub-body">
+        <div class="pub-title">Self-Supervised Plankton Classification via DINO and Gradient-Based Loss Re-weighting</div>
+        <div class="pub-authors">A. Ahmad, Z. Habash, A. Ahmad, M. Alradi, <strong>A. Boudiaf</strong>, N. Werghi, et al.</div>
+        <div class="pub-venue">Under Review, 2026</div>
+      </div>
+      <div class="pub-right"></div>
+    </div>
+    <div class="pub-item" data-cat="robotics">
+      <div class="pub-year">2025</div>
+      <div class="pub-body">
+        <div class="pub-title">Robotic Optimal Path Planning via Multi-Objective Dolphin Echolocation Optimization</div>
+        <div class="pub-authors">M. Al Radi, A. Ahmad, <strong>A. Boudiaf</strong></div>
+        <div class="pub-venue">ASET 2025</div>
+      </div>
+      <div class="pub-right"></div>
+    </div>
+    <div class="pub-item" data-cat="vision">
+      <div class="pub-year">2025</div>
+      <div class="pub-body">
+        <div class="pub-title">BB-UWCrack: A Benchmark Dataset for Bounding Box Crack Detection in Underwater Structures</div>
+        <div class="pub-authors">M. ElMezain, <strong>A. Boudiaf</strong>, M. Abujabal, A. Ghimire, G. De Masi</div>
+        <div class="pub-venue">ASET 2025</div>
+      </div>
+      <div class="pub-right"></div>
+    </div>
+    <div class="pub-item" data-cat="vision" data-doi="10.1109/ICIP51287.2024.10647975">
+      <div class="pub-year">2024</div>
+      <div class="pub-body">
+        <div class="pub-title">CLIFS: CLIP-Driven Few-Shot Learning for Baggage Threat Classification</div>
+        <div class="pub-authors">A. Ahmed, D. Velayudhan, M. ElMezain, M. Al Radi, <strong>A. Boudiaf</strong>, T. Hassan, et al.</div>
+        <div class="pub-venue">IEEE ICIP 2024, pp. 753–759</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations" id="cite-clifs">11 citations</span></div>
+    </div>
+    <div class="pub-item" data-cat="vision" data-doi="10.1109/ICIP51287.2024.10647983">
+      <div class="pub-year">2024</div>
+      <div class="pub-body">
+        <div class="pub-title">SMO-CLIP: Enhancing Anomalous Smoke Density Assessment Using a Hybrid LLM–VLM Approach</div>
+        <div class="pub-authors">P. Li, M. Al Radi, M. S. Elmezain, A. H. Ahmed, <strong>A. Boudiaf</strong>, et al.</div>
+        <div class="pub-venue">IEEE ICIP 2024, pp. 760–765</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations" id="cite-smoClip">4 citations</span></div>
+    </div>
+    <div class="pub-item" data-cat="robotics">
+      <div class="pub-year">2024</div>
+      <div class="pub-body">
+        <div class="pub-title">Reinforcement Learning-Based Optimal Control Design for Active Suspension Systems</div>
+        <div class="pub-authors">A. Ahmad, M. Al Radi, A. Ahmad, <strong>A. Boudiaf</strong></div>
+        <div class="pub-venue">ASET 2024</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations">5 citations</span></div>
+    </div>
+    <div class="pub-item" data-cat="vision">
+      <div class="pub-year">2024</div>
+      <div class="pub-body">
+        <div class="pub-title">Machine Learning-Based Multivariate Classification of Cardiac Autonomic Neuropathy via Imbalanced ECG Recordings</div>
+        <div class="pub-authors">M. Al Radi, A. Ahmad, A. Ahmad, <strong>A. Boudiaf</strong>, et al.</div>
+        <div class="pub-venue">ASET 2024</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations">1 citation</span></div>
+    </div>
+    <div class="pub-item" data-cat="agriculture vision" data-doi="10.1007/978-3-031-06433-3_41">
+      <div class="pub-year">2022</div>
+      <div class="pub-body">
+        <div class="pub-title">Underwater Image Enhancement Using Pre-trained Transformer</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, Y. Guo, A. Ghimire, N. Werghi, G. De Masi, S. Javed, J. Dias</div>
+        <div class="pub-venue">ICIAP 2022, LNCS vol. 13233, pp. 480–488, Springer</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations live" id="cite-underwater"><span class="spinner"></span></span><a href="https://link.springer.com/chapter/10.1007/978-3-031-06433-3_41" class="pub-link" target="_blank">↗ Springer</a></div>
+    </div>
+    <div class="pub-item" data-cat="robotics" data-doi="10.1109/ROSE56499.2022.9977444">
+      <div class="pub-year">2022</div>
+      <div class="pub-body">
+        <div class="pub-title">Image-Based Obstacle Avoidance Using 3DConv Network for Rocky Environments</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong>, A. Al Sumaiti, J. Dias</div>
+        <div class="pub-venue">IEEE ROSE 2022</div>
+      </div>
+      <div class="pub-right"><span class="pub-citations live" id="cite-obstacle"><span class="spinner"></span></span></div>
+    </div>
+    <div class="pub-item" data-cat="robotics">
+      <div class="pub-year">2022</div>
+      <div class="pub-body">
+        <div class="pub-title">Robot Navigation in Low Visibility Conditions</div>
+        <div class="pub-authors"><strong>A. Boudiaf</strong></div>
+        <div class="pub-venue">MSc Thesis, Khalifa University</div>
+      </div>
+      <div class="pub-right"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 / BACKGROUND ============ -->
+<section id="background" class="section">
+  <div class="chapter reveal">
+    <div class="eyebrow"><span class="num">05</span><span class="line"></span><span class="kicker">Background</span></div>
+    <h2>Experience &amp; education</h2>
+    <p class="intro">Six years at Khalifa University spanning robotics, computer vision, and foundation-model research — alongside teaching and mentorship.</p>
+  </div>
+
+  <div class="reveal">
+    <div class="bg-block">
+      <div class="bg-block-title">Education</div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-head"><span class="tl-role">PhD, Electrical Engineering &amp; Computer Science</span><span class="tl-when">2020 — Present · Expected Dec 2026</span></div>
+          <div class="tl-org">Khalifa University of Science and Technology · Abu Dhabi, UAE</div>
+          <div class="tl-note">Thesis: Computer Vision for Agriculture and Crops · Supervisor: Dr. Sajid Javed</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-head"><span class="tl-role">MSc, Robotics &amp; Autonomous Systems</span><span class="tl-when">2020 — 2022</span></div>
+          <div class="tl-org">Khalifa University of Science and Technology · Abu Dhabi, UAE</div>
+          <div class="tl-note">Thesis: Robot Navigation in Low Visibility Conditions · Supervisor: Prof. Jorge Dias</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-block">
+      <div class="bg-block-title">Research Experience</div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-head"><span class="tl-role">PhD Researcher — Visual Recognition Group</span><span class="tl-when">2020 — Present</span></div>
+          <div class="tl-org">Khalifa University of Science and Technology</div>
+          <ul class="tl-list">
+            <li>Designed and open-sourced <strong>CropVLM</strong> and <strong>AgriChat</strong> — foundation-model pipelines for agricultural AI covering 3,000+ crop classes and 37 species.</li>
+            <li>Built <strong>SegRAG</strong>, a training-free retrieval-augmented semantic segmentation framework using open-vocabulary VLMs.</li>
+            <li>Led underwater image enhancement work with pre-trained transformers (29 citations, ICIAP 2022, Springer LNCS).</li>
+            <li>Co-authored two IEEE ICIP 2024 papers on CLIP-based few-shot threat classification and hybrid LLM–VLM anomaly detection.</li>
+            <li>Conducted research under three externally funded KU projects (RC1-2018-KUCARS, CIRA-2019-047, FSU-2022-003) and mentored junior MSc and PhD researchers.</li>
+          </ul>
+        </div>
+        <div class="tl-item">
+          <div class="tl-head"><span class="tl-role">MSc Researcher</span><span class="tl-when">2020 — 2022</span></div>
+          <div class="tl-org">Khalifa University of Science and Technology</div>
+          <ul class="tl-list">
+            <li>Developed a 3D convolutional network for image-based obstacle avoidance in rocky terrain (IEEE ROSE 2022, 5 citations).</li>
+            <li>Investigated autonomous robot navigation under degraded visual conditions — fog, dust, and low light.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-block">
+      <div class="bg-block-title">Teaching</div>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-head"><span class="tl-role">Teaching Assistant &amp; Lab Instructor</span><span class="tl-when">2020 — Present</span></div>
+          <div class="tl-org">Khalifa University of Science and Technology</div>
+          <ul class="tl-list">
+            <li><strong>Data Science &amp; Artificial Intelligence</strong> — hands-on labs on data analysis, statistical methods, and ML; Python for AI with NumPy, Pandas, and scikit-learn.</li>
+            <li><strong>Introduction to MATLAB</strong> — foundational programming, matrix operations, and data visualisation through practical lab exercises.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 / SKILLS ============ -->
+<section id="skills" class="section">
+  <div class="chapter reveal">
+    <div class="eyebrow"><span class="num">06</span><span class="line"></span><span class="kicker">Skills</span></div>
+    <h2>Technical skills</h2>
+    <p class="intro">Tools and methods I work with day to day, from model architectures down to deployment.</p>
+  </div>
+  <div class="skills-grid reveal">
+    <div class="skill-group"><div class="skill-group-title">Deep Learning &amp; Vision</div><div class="skill-pills"><span class="skill-pill">PyTorch</span><span class="skill-pill">JAX</span><span class="skill-pill">CLIP</span><span class="skill-pill">ViT</span><span class="skill-pill">DINO</span><span class="skill-pill">SAM</span><span class="skill-pill">Deformable DETR</span><span class="skill-pill">OpenCLIP</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">LLM &amp; Multimodal</div><div class="skill-pills"><span class="skill-pill">HuggingFace</span><span class="skill-pill">LLaVA</span><span class="skill-pill">LoRA / PEFT</span><span class="skill-pill">RAG</span><span class="skill-pill">Instruction Tuning</span><span class="skill-pill">VQA</span><span class="skill-pill">Prompt Engineering</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">Agriculture AI</div><div class="skill-pills"><span class="skill-pill">Plant Phenotyping</span><span class="skill-pill">Disease Detection</span><span class="skill-pill">Crop Detection</span><span class="skill-pill">Open-Set Recognition</span><span class="skill-pill">Agronomic VQA</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">MLOps &amp; Deployment</div><div class="skill-pills"><span class="skill-pill">AWS</span><span class="skill-pill">Docker</span><span class="skill-pill">Git</span><span class="skill-pill">Weights &amp; Biases</span><span class="skill-pill">ONNX</span><span class="skill-pill">GitHub Actions</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">Programming</div><div class="skill-pills"><span class="skill-pill">Python</span><span class="skill-pill">MATLAB</span><span class="skill-pill">C++</span><span class="skill-pill">NumPy</span><span class="skill-pill">OpenCV</span><span class="skill-pill">Pandas</span><span class="skill-pill">scikit-learn</span></div></div>
+    <div class="skill-group"><div class="skill-group-title">Robotics</div><div class="skill-pills"><span class="skill-pill">ROS</span><span class="skill-pill">Path Planning</span><span class="skill-pill">RL Control</span><span class="skill-pill">3D Conv</span><span class="skill-pill">Sensor Fusion</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 07 / CONTACT ============ -->
+<section id="contact" class="section">
+  <div class="chapter reveal">
+    <div class="eyebrow" style="justify-content:center;"><span class="num">07</span><span class="line"></span><span class="kicker">Contact</span></div>
+    <h2>Get in touch</h2>
+  </div>
+  <p class="contact-sub reveal">Open to academic collaborations, postdoc opportunities, and industry roles in the UAE and GCC. Always happy to talk computer vision, foundation models, and AI for agriculture.</p>
+  <div class="contact-links reveal">
+    <a href="mailto:boudiafabderrahmene@gmail.com" class="btn btn-primary">✉ Email me</a>
+    <a href="https://www.linkedin.com/in/abderrahman-boudiaf-188555108/" class="btn btn-outline" target="_blank">LinkedIn</a>
+    <a href="https://github.com/boudiafA" class="btn btn-outline" target="_blank">GitHub</a>
+    <a href="https://scholar.google.com/citations?user=1FTxzmoAAAAJ&hl=en" class="btn btn-outline" target="_blank">Google Scholar</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>© 2026 Abderrahmene Boudiaf &nbsp;·&nbsp; Stats powered by <a href="https://openalex.org" target="_blank">OpenAlex</a> &amp; the <a href="https://github.com/boudiafA" target="_blank">GitHub API</a></p>
+</footer>
+
+<script>
+// ── Ambient particle canvas (subtle) ─────────────────────────
+const canvas = document.getElementById('bg-canvas');
+const ctx    = canvas.getContext('2d');
+let particles = [], W, H;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+function mkP() { return { x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.3+0.3, vx: (Math.random()-0.5)*0.12, vy: (Math.random()-0.5)*0.12, a: Math.random() }; }
+function initP() { particles = Array.from({length:75}, mkP); }
+function draw() {
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(46,204,113,${p.a*0.25})`; ctx.fill();
+  });
+  for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++) {
+    const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y, d=Math.sqrt(dx*dx+dy*dy);
+    if(d<100){ ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y);
+      ctx.strokeStyle=`rgba(46,204,113,${(1-d/100)*0.05})`; ctx.lineWidth=0.5; ctx.stroke(); }
+  }
+  requestAnimationFrame(draw);
+}
+if(!reduceMotion){
+  window.addEventListener('resize', ()=>{ resize(); initP(); });
+  resize(); initP(); draw();
+}
+
+// ── Scroll progress bar ──────────────────────────────────────
+const progress = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  progress.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+});
+
+// ── Scroll reveal ────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Mobile nav toggle ────────────────────────────────────────
+const navToggle = document.getElementById('navToggle');
+const navLinks  = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => {
+  navToggle.classList.toggle('open');
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  navToggle.classList.remove('open'); navLinks.classList.remove('open');
+}));
+
+// ── Nav active state (scrollspy) ─────────────────────────────
+const sections = document.querySelectorAll('section[id]');
+const navAnchors = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if(window.scrollY >= s.offsetTop - 140) current = s.id; });
+  navAnchors.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current));
+});
+
+// ── Publication filter ───────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.pub-item').forEach(item => {
+      item.style.display = (f==='all' || (item.dataset.cat||'').includes(f)) ? '' : 'none';
+    });
+  });
+});
+
+// ── OpenAlex — live citations & h-index ──────────────────────
+async function loadOpenAlex() {
+  // Verified Google Scholar baseline (1FTxzmoAAAAJ) shown immediately;
+  // OpenAlex is used to refresh per-paper counts live.
+  const KNOWN = { citations: 55, hindex: 4, papers: 13 };
+
+  function setStats(c, h, p) {
+    document.getElementById('stat-citations').textContent = c;
+    document.getElementById('stat-hindex').textContent    = h;
+    document.getElementById('stat-papers').textContent    = p;
+    ['stat-citations','stat-hindex','stat-papers'].forEach(id =>
+      document.getElementById(id).classList.remove('loading'));
+  }
+  function clearSpinners() {
+    document.querySelectorAll('.pub-citations .spinner').forEach(s =>
+      s.parentElement.textContent = '');
+  }
+
+  setStats(KNOWN.citations, KNOWN.hindex, KNOWN.papers);
+  clearSpinners();
+
+  try {
+    const seedRes = await fetch(
+      'https://api.openalex.org/works?filter=doi:10.1007/978-3-031-06433-3_41' +
+      '&mailto=boudiafa.github.io');
+    if (!seedRes.ok) throw new Error('seed fetch failed');
+    const seedData = await seedRes.json();
+    const seedWork = seedData.results?.[0];
+    if (!seedWork) throw new Error('seed work not found');
+
+    const authorship = seedWork.authorships?.find(a =>
+      a.author?.display_name?.toLowerCase().includes('boudiaf'));
+    if (!authorship) throw new Error('author not found in seed work');
+
+    const authorId = authorship.author.id;
+
+    const worksRes = await fetch(
+      `https://api.openalex.org/works?filter=authorships.author.id:${authorId}` +
+      `&per-page=50&mailto=boudiafa.github.io`);
+    if (!worksRes.ok) throw new Error('works fetch failed');
+    const worksData = await worksRes.json();
+
+    const totalCites = worksData.results?.reduce((s, w) => s + (w.cited_by_count || 0), 0) || 0;
+    if (totalCites >= KNOWN.citations) {
+      setStats(totalCites, KNOWN.hindex, worksData.meta?.count || KNOWN.papers);
+    }
+
+    worksData.results?.forEach(work => {
+      const doi   = (work.doi || '').replace('https://doi.org/', '').toLowerCase();
+      const count = work.cited_by_count ?? 0;
+      document.querySelectorAll('.pub-item[data-doi]').forEach(item => {
+        const itemDoi = (item.dataset.doi || '').toLowerCase();
+        if (itemDoi && doi && (doi.includes(itemDoi) || itemDoi.includes(doi.split('/').pop()))) {
+          item.querySelectorAll('.pub-citations').forEach(el => {
+            el.textContent = count > 0 ? `${count} citation${count !== 1 ? 's' : ''}` : '';
+          });
+        }
+      });
+    });
+
+  } catch(err) {
+    console.warn('OpenAlex per-paper fetch failed:', err.message);
+  }
+}
+
+loadOpenAlex();
+</script>
+</body>
+</html>
